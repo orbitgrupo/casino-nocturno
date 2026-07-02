@@ -2,7 +2,9 @@
 
 1. Crea un proyecto en Supabase.
 2. Activa **Authentication → Providers → Anonymous Sign-Ins**.
-3. Abre **SQL Editor**, pega y ejecuta `migrations/202607020001_invitation_rooms.sql`.
+3. Abre **SQL Editor** y ejecuta, en orden:
+   - `migrations/202607020001_invitation_rooms.sql`
+   - `migrations/202607020002_player_profiles.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

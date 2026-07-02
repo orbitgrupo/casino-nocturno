@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07130f">
+  <title>Administración · Casino Nocturno</title>
+  <link rel="icon" type="image/png" href="assets/casino-favicon.png?v=2">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="theme-casino admin-page">
+  <header class="admin-topbar">
+    <a href="index.html" class="brand"><span class="brand-mark">♠</span><span><strong>CASINO NOCTURNO</strong><small>← VOLVER AL CASINO</small></span></a>
+    <div><small>ACCESO RESTRINGIDO</small><strong>Administración general</strong></div>
+  </header>
+  <main class="admin-shell">
+    <section id="adminLogin" class="admin-login">
+      <p class="eyebrow">IDENTIFICACIÓN</p><h1>Panel administrativo</h1>
+      <p>Recupera el perfil autorizado como administrador. No se utiliza correo ni teléfono.</p>
+      <form id="adminLoginForm">
+        <label>Código de jugador<input name="playerCode" required maxlength="14" placeholder="ORBIT-1A2B3C4D"></label>
+        <label>Clave de recuperación<input name="recoveryKey" required maxlength="39" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" type="password"></label>
+        <button class="primary-btn" type="submit">ENTRAR AL DASHBOARD</button>
+      </form>
+      <p id="adminMessage" class="admin-message" role="status"></p>
+    </section>
+    <section id="adminDashboard" hidden>
+      <div class="dashboard-heading"><div><p class="eyebrow">CONTROL GENERAL</p><h1>Resumen del casino</h1></div><button id="refreshAdmin" class="outline-btn">ACTUALIZAR</button></div>
+      <div id="summaryCards" class="summary-cards"></div>
+      <section class="admin-panel"><header><div><small>SALAS</small><h2>Actividad por juego</h2></div><select id="roomFilter"><option value="">Todas</option><option value="waiting">Esperando</option><option value="active">Activas</option><option value="closed">Cerradas</option></select></header><div class="table-scroll"><table><thead><tr><th>Código</th><th>Juego</th><th>Estado</th><th>Anfitrión</th><th>Miembros</th><th>Creada</th></tr></thead><tbody id="roomsTable"></tbody></table></div></section>
+      <section class="admin-panel"><header><div><small>JUGADORES</small><h2>Perfiles y puntos</h2></div><input id="playerSearch" placeholder="Buscar nombre o código"></header><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Sala actual</th><th>Créditos sala</th><th>Creado</th></tr></thead><tbody id="playersTable"></tbody></table></div></section>
+    </section>
+  </main>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

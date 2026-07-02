@@ -1,7 +1,7 @@
 (function(){
   'use strict';
-  const PAGE=(location.pathname.split('/').pop()||'').toLowerCase();
-  const GAME_MAP={'blackjack.html':'blackjack','roulette.html':'roulette','tres-y-dos.html':'tres-y-dos','domino.html':'domino'};
+  const PAGE=(location.pathname.split('/').filter(Boolean).pop()||'').toLowerCase().replace(/\.html$/,'');
+  const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino'};
   const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó'};
   const game=GAME_MAP[PAGE];if(!game)return;
   let client=null,user=null,room=null,members=[],channel=null;

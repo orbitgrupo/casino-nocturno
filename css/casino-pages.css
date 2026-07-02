@@ -72,6 +72,18 @@
 .domino-tile-piece.is-double .domino-half+.domino-half{border-top:0;border-left:1px solid #24211d}
 @media(max-width:680px){.domino-tile-piece.is-double{width:59px;height:31px}}
 
+/* Mano de dominó: todas acostadas, separadas y reordenables */
+.domino-seat{width:292px}
+.domino-hand{justify-content:flex-start;align-items:center;gap:8px;min-height:48px;padding:6px 3px 9px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--gold) rgba(0,0,0,.15)}
+.domino-hand .domino-tile-piece,.domino-hand .domino-tile-piece.is-double{flex:0 0 62px;flex-direction:row;width:62px;height:34px;margin:0;cursor:grab}
+.domino-hand .domino-tile-piece .domino-half,.domino-hand .domino-tile-piece.is-double .domino-half{width:50%;height:100%}
+.domino-hand .domino-tile-piece .domino-half+.domino-half,.domino-hand .domino-tile-piece.is-double .domino-half+.domino-half{border-top:0;border-left:1px solid #24211d}
+.domino-hand .domino-tile-piece.dragging{opacity:.3;translate:0 -9px;cursor:grabbing}
+.domino-hand .domino-tile-piece.playable{outline:2px solid rgba(255,220,128,.75);outline-offset:2px;box-shadow:0 0 14px rgba(255,210,95,.3)}
+.domino-hand .domino-tile-piece.not-playable{filter:brightness(.82)}
+.domino-hand .domino-tile-piece:hover:not(:disabled){translate:0 -5px;filter:brightness(1.07)}
+@media(max-width:680px){.domino-seat{width:auto}.domino-hand .domino-tile-piece,.domino-hand .domino-tile-piece.is-double{flex-basis:57px;width:57px;height:31px}}
+
 /* Manos organizables y reclamo manual en Tres y Dos */
 .side-prizes.two-prizes{grid-template-columns:repeat(2,1fr);width:300px}
 .tyd-seat{width:245px}

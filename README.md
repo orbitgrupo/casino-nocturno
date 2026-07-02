@@ -9,7 +9,7 @@ Mini casino local y responsivo construido con HTML, CSS y JavaScript puro. Funci
 - **Blackjack:** mesa para personas y bots, apuestas, rendición y dealer manual o automático.
 - **Ruleta:** variantes europea y americana, rueda numerada y apuestas interiores y exteriores.
 - **Tres y Dos:** cinco participantes, premios secundarios opcionales, manos ordenables y bots.
-- **Dominó:** doble-seis clásico por parejas y Pintintín individual.
+- **Dominó:** doble-seis clásico por parejas y Pintintín individual, con manos reordenables mediante arrastrar y soltar.
 
 Los cuatro juegos comparten tres diseños visuales: Casino clásico, Esmeralda circular y Nocturno moderno. Las preferencias y partidas locales se guardan mediante `localStorage`.
 

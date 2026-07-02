@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07130f">
+  <title>Mesa Blackjack Nocturno</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="theme-casino">
+  <div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Volver al casino"><span class="brand-mark">21</span><span><strong>BLACKJACK</strong><small>← VOLVER AL CASINO</small></span></a>
+    <div class="room-badge"><span>MODO</span><strong>LOCAL · ADMIN</strong></div>
+  </header>
+
+  <main id="game" class="game-shell multiplayer-shell">
+    <section class="table multiplayer-table" aria-labelledby="table-title">
+      <div class="table-ring" aria-hidden="true"></div>
+      <div class="table-heading">
+        <p class="eyebrow">MESA PRIVADA · BLACKJACK PAGA 3:2</p>
+        <h1 id="table-title">Mesa del administrador</h1>
+        <p id="status" class="status" role="status" aria-live="polite">Agrega jugadores o comienza la ronda.</p>
+      </div>
+      <div class="dealer-rail" aria-hidden="true">
+        <div class="shoe"><span></span><span></span><span></span><span></span></div>
+        <div class="chip-tray">
+          <i class="tray-chip red"></i><i class="tray-chip red"></i><i class="tray-chip blue"></i><i class="tray-chip blue"></i><i class="tray-chip cream"></i><i class="tray-chip green"></i><i class="tray-chip green"></i><i class="tray-chip black"></i><i class="tray-chip black"></i>
+        </div>
+        <div class="discard-tray"><span>DESCARTE</span></div>
+      </div>
+      <div class="hand-zone dealer-zone">
+        <div class="hand-label"><span>DEALER</span><output id="dealerScore" class="score">—</output></div>
+        <div id="dealerHand" class="cards compact-cards" aria-label="Cartas del dealer"></div>
+      </div>
+      <div class="table-emblem" aria-hidden="true"><span>♠</span><b>BLACKJACK</b><small>MULTIJUGADOR LOCAL</small></div>
+      <div class="casino-rules" aria-hidden="true"><strong>BLACKJACK PAGA 3 A 2</strong><span>EL DEALER SE PLANTA EN 17 · SEGURO PAGA 2 A 1</span></div>
+      <div id="seats" class="seats" aria-label="Asientos de jugadores"></div>
+    </section>
+
+    <aside class="control-panel admin-panel" aria-label="Panel del administrador">
+      <div class="admin-heading"><span class="admin-crown">♛</span><div><small>CONTROL DE MESA</small><strong>Administrador</strong></div></div>
+
+      <section class="panel-section">
+        <div class="section-title"><span>JUGADORES</span><b id="playerCount">0 / 6</b></div>
+        <div id="roster" class="roster"></div>
+        <button id="openAddPlayer" class="outline-btn" type="button">+ AGREGAR JUGADOR</button>
+      </section>
+
+      <section class="panel-section">
+        <label for="tableBet" class="section-title"><span>APUESTA DE LA MESA</span></label>
+        <div class="bet-input-wrap"><button id="betMinus" class="icon-btn" type="button">−</button><input id="tableBet" type="number" min="10" step="10" value="50"><button id="betPlus" class="icon-btn" type="button">+</button></div>
+        <p class="panel-help">Se aplica a todos los jugadores con saldo suficiente.</p>
+        <button id="dealBtn" class="primary-btn" type="button">REPARTIR CARTAS</button>
+      </section>
+
+      <section class="panel-section turn-panel">
+        <small>TURNO ACTUAL</small><strong id="turnName">Esperando ronda</strong>
+        <div class="turn-actions"><button id="hitBtn" class="action-btn" disabled>+ PEDIR</button><button id="standBtn" class="action-btn" disabled>◆ PLANTARSE</button><button id="surrenderBtn" class="action-btn subtle" disabled>↩ RENDIRSE</button></div>
+        <div id="dealerActions" class="dealer-actions" hidden><button id="dealerHitBtn" class="action-btn">+ PEDIR PARA DEALER</button><button id="dealerStandBtn" class="action-btn">◆ PLANTAR DEALER</button></div>
+        <button id="newRoundBtn" class="primary-btn" hidden>NUEVA RONDA</button>
+      </section>
+
+      <details class="settings">
+        <summary>Preferencias y futuro online</summary>
+        <div class="theme-setting"><span>Diseño de la mesa</span><div class="theme-options" role="group" aria-label="Diseño de la mesa"><button type="button" data-theme="casino" aria-pressed="true"><i class="theme-preview casino"></i><b>Casino</b><small>Clásico</small></button><button type="button" data-theme="elegant" aria-pressed="false"><i class="theme-preview elegant"></i><b>Esmeralda</b><small>Circular</small></button><button type="button" data-theme="night" aria-pressed="false"><i class="theme-preview night"></i><b>Nocturno</b><small>Moderno</small></button></div></div>
+        <label class="switch-row"><span>Animaciones</span><input id="animationsToggle" type="checkbox" checked></label>
+        <label class="dealer-mode-setting"><span>Control del dealer</span><select id="dealerMode"><option value="automatic">Automático · se planta en 19</option><option value="manual">Manual · tú decides</option></select></label>
+        <div class="future-room"><small>CÓDIGO DE INVITACIÓN</small><strong>PRÓXIMAMENTE</strong><p>La mesa ya separa la lógica de la pantalla para conectar un servidor en el futuro.</p></div>
+        <button id="resetTableBtn" class="text-btn" type="button">Restablecer toda la mesa</button>
+      </details>
+    </aside>
+  </main>
+
+  <footer><span>Solo entretenimiento · Créditos ficticios</span><span>No utiliza ni entrega dinero real</span></footer>
+
+  <div id="playerDialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="playerDialogTitle" hidden>
+    <form id="playerForm" class="modal-card">
+      <h2 id="playerDialogTitle">Agregar a la mesa</h2>
+      <label class="field-label">Nombre<input id="playerName" maxlength="18" required placeholder="Ej. María"></label>
+      <fieldset class="player-type"><legend>Tipo de jugador</legend><label><input type="radio" name="playerType" value="human" checked><span>☺</span>Persona real<small>Juega por turnos aquí</small></label><label><input type="radio" name="playerType" value="bot"><span>⚙</span>Bot automático<small>Decide según su mano</small></label></fieldset>
+      <label class="field-label">Créditos iniciales<input id="playerWallet" type="number" min="10" step="10" value="1000" required></label>
+      <p id="formError" class="form-error" role="alert"></p>
+      <div class="modal-actions"><button id="cancelPlayer" class="text-btn" type="button">Cancelar</button><button class="primary-btn" type="submit">AGREGAR</button></div>
+    </form>
+  </div>
+
+  <script src="js/common.js"></script><script src="js/game.js"></script><script src="js/table.js"></script><script src="js/ui.js"></script>
+</body>
+</html>

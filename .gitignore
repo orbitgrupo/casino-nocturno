@@ -1,0 +1,20 @@
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.tmp
+*.log
+
+# Dependencias y resultados locales
+node_modules/
+coverage/
+.cache/
+dist/
+
+# Configuración local y secretos
+.env
+.env.*
+!.env.example

@@ -48,7 +48,11 @@ tests/                  Pruebas de Blackjack y mesa
 
 ## Estado del proyecto
 
-Esta versión funciona de forma local en una sola pantalla. La arquitectura del Blackjack deja preparado un gateway para añadir salas con códigos de invitación mediante un servidor en una versión futura.
+Los juegos siguen funcionando localmente. Además, cada mesa incluye una antesala opcional preparada para Supabase con códigos de invitación, anfitrión jugador o moderador, participantes en tiempo real y administración protegida de créditos.
+
+Para activarla, sigue [las instrucciones de Supabase](supabase/README.md). Hasta configurar la URL, la clave publicable, Auth anónimo y la migración SQL, el botón **Sala online** mostrará el estado pendiente de configuración.
+
+La antesala no sincroniza todavía las jugadas. La validación servidor-autoritativa de las reglas y el estado compartido de cada partida corresponde a la siguiente etapa mediante Supabase Edge Functions.
 
 ## Licencia
 

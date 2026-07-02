@@ -7,4 +7,10 @@
  function setWallet(value){profile.wallet=Math.max(0,Number(value)||0);save();document.querySelectorAll('[data-global-wallet],#globalWallet').forEach(e=>e.textContent=profile.wallet.toLocaleString('es-ES',{maximumFractionDigits:1}));}
  global.CasinoStore={get wallet(){return profile.wallet},setWallet,applyTheme,get theme(){return profile.theme},reset(){setWallet(1000)}};
  applyTheme(profile.theme);setWallet(profile.wallet);document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>applyTheme(b.dataset.theme)));
+ const page=location.pathname.split('/').pop()||'index.html';
+ if(['blackjack.html','roulette.html','tres-y-dos.html','domino.html'].includes(page)){
+   const css=document.createElement('link');css.rel='stylesheet';css.href='css/rooms.css';document.head.appendChild(css);
+   const load=src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script)});
+   load('js/supabase-config.js').then(()=>load('js/room-lobby.js')).catch(()=>{});
+ }
 })(window);

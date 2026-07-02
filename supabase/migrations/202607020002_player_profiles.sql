@@ -43,11 +43,11 @@ begin
   if char_length(trim(p_display_name)) not between 1 and 20 then raise exception 'Invalid display name';end if;
   if char_length(v_key)<24 then raise exception 'Recovery key is too short';end if;
   loop
-    v_code:='ORBIT-'||upper(substr(encode(gen_random_bytes(6),'hex'),1,8));
+    v_code:='ORBIT-'||upper(substr(md5(gen_random_uuid()::text),1,8));
     exit when not exists(select 1 from public.casino_player_profiles where casino_player_profiles.player_code=v_code);
   end loop;
   insert into public.casino_player_profiles(id,player_code,display_name,recovery_hash)
-  values(v_id,v_code,trim(p_display_name),crypt(v_key,gen_salt('bf',11)));
+  values(v_id,v_code,trim(p_display_name),extensions.crypt(v_key,extensions.gen_salt('bf',11)));
   insert into public.casino_profile_sessions(user_id,profile_id) values(v_user,v_id);
   return query select v_id,v_code,trim(p_display_name),0;
 end;$$;
@@ -61,7 +61,7 @@ begin
   if v_user is null then raise exception 'Authentication required';end if;
   select * into v_profile from public.casino_player_profiles
   where casino_player_profiles.player_code=upper(trim(p_player_code));
-  if not found or crypt(v_key,v_profile.recovery_hash)<>v_profile.recovery_hash then raise exception 'Invalid player code or recovery key';end if;
+  if not found or extensions.crypt(v_key,v_profile.recovery_hash)<>v_profile.recovery_hash then raise exception 'Invalid player code or recovery key';end if;
   insert into public.casino_profile_sessions(user_id,profile_id) values(v_user,v_profile.id)
   on conflict(user_id) do update set profile_id=excluded.profile_id,linked_at=now();
   update public.casino_room_members set user_id=v_user where profile_id=v_profile.id;

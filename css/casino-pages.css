@@ -99,3 +99,79 @@
 .claim-btn:not(:disabled){animation:claim-glow 1s ease-in-out infinite alternate}
 @keyframes claim-glow{to{box-shadow:0 0 24px rgba(255,215,113,.45)}}
 @media(max-width:620px){.side-prizes.two-prizes{width:270px}.tyd-seat{width:auto}.tyd-card{width:42px;height:67px;margin-left:-8px}.tyd-hand{overflow-x:auto;justify-content:flex-start;padding-bottom:5px}}
+
+/* Mesa de dominó inspirada en una mesa física para cuatro jugadores */
+@media(min-width:1001px){
+  .domino-table{
+    min-height:900px;
+    border-width:18px;
+    border-radius:28px;
+    background:radial-gradient(circle at 50% 45%,#2b7257 0,#15513c 52%,#0a3024 100%);
+    box-shadow:inset 0 0 0 3px rgba(238,194,92,.2),inset 0 0 95px rgba(0,0,0,.28),0 20px 55px rgba(0,0,0,.35)
+  }
+  .domino-table::before{
+    inset:4.5%;
+    border:1px solid rgba(239,199,101,.3);
+    border-radius:20px
+  }
+  .domino-table::after{
+    content:"DOMINÓ  ·  DOBLE SEIS";
+    position:absolute;
+    left:50%;
+    top:20%;
+    translate:-50% 0;
+    color:rgba(238,199,104,.2);
+    font:600 17px Georgia,serif;
+    letter-spacing:.22em;
+    white-space:nowrap
+  }
+  .domino-center{top:50%;width:min(720px,66%)}
+  .domino-center h1{margin-bottom:12px;color:rgba(255,242,204,.8)}
+  .domino-chain{
+    flex-wrap:wrap;
+    justify-content:center;
+    min-height:180px;
+    max-height:220px;
+    padding:28px 34px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    border-color:rgba(255,255,255,.12);
+    border-radius:22px;
+    background:rgba(2,24,17,.17);
+    scrollbar-width:thin;
+    scrollbar-color:rgba(232,189,104,.7) transparent
+  }
+  .domino-chain:empty{justify-content:center}
+  .domino-seat{
+    border-color:rgba(232,189,104,.36);
+    background:linear-gradient(145deg,rgba(5,37,27,.94),rgba(2,24,18,.9));
+    box-shadow:0 9px 24px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.04)
+  }
+  .domino-seat.seat-0,.domino-seat.seat-2{width:470px}
+  .domino-seat.seat-0{bottom:22px}
+  .domino-seat.seat-2{top:22px}
+  .domino-seat.seat-0 .domino-hand,.domino-seat.seat-2 .domino-hand{justify-content:center}
+  .domino-seat.seat-1,.domino-seat.seat-3{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:112px;
+    max-height:600px;
+    padding:10px 8px
+  }
+  .domino-seat.seat-1{right:22px}
+  .domino-seat.seat-3{left:22px}
+  .domino-seat.seat-1 header,.domino-seat.seat-3 header{width:100%}
+  .domino-seat.seat-1 .domino-hand,.domino-seat.seat-3 .domino-hand{
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    width:76px;
+    max-height:480px;
+    margin-top:10px;
+    padding:4px 7px;
+    overflow-x:hidden;
+    overflow-y:auto
+  }
+  .domino-seat.seat-1 .domino-tile-piece,.domino-seat.seat-3 .domino-tile-piece{flex:0 0 34px}
+}

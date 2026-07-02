@@ -4,6 +4,7 @@
   const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino'};
   const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó'};
   const game=GAME_MAP[PAGE];if(!game)return;
+  const ROOM_KEY=`casino.onlineRoom.${game}`;
   let client=null,user=null,room=null,members=[],channel=null;
   const config=window.CASINO_SUPABASE_CONFIG||{};
   const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -43,7 +44,8 @@
   async function rpc(name,params){await ensureClient();const {data,error}=await client.rpc(name,params);if(error)throw error;return Array.isArray(data)?data[0]:data}
   async function createRoom(form){const values=new FormData(form);const result=await rpc('create_casino_room',{p_game_type:game,p_host_mode:values.get('hostMode'),p_display_name:values.get('displayName'),p_initial_credits:Number(values.get('initialCredits'))});await openRoom(result.room_id)}
   async function joinRoom(form){const values=new FormData(form);const result=await rpc('join_casino_room',{p_invite_code:String(values.get('inviteCode')).trim().toUpperCase(),p_display_name:values.get('displayName')});await openRoom(result.room_id)}
-  async function openRoom(id){room={id};await refresh();subscribe();history.replaceState(null,'',`${location.pathname}?room=${room.invite_code}`)}
+  async function openRoom(id){room={id};await refresh();localStorage.setItem(ROOM_KEY,room.id);subscribe();history.replaceState(null,'',`${location.pathname}?room=${room.invite_code}`)}
+  async function resumeSavedRoom(){const id=localStorage.getItem(ROOM_KEY);if(!id)return;try{await openRoom(id)}catch(error){localStorage.removeItem(ROOM_KEY);room=null;throw error}}
   async function refresh(){
     if(!room?.id)return;await ensureClient();
     const [{data:roomData,error:roomError},{data:memberData,error:memberError}]=await Promise.all([client.from('casino_rooms').select('*').eq('id',room.id).single(),client.from('casino_room_members').select('*').eq('room_id',room.id).order('seat',{ascending:true,nullsFirst:false})]);
@@ -57,7 +59,7 @@
       <div class="room-meta"><span>${escape(GAME_LABEL[room.game_type])}</span><span>${escape(status)}</span><span>${members.length} conectados</span></div>
       ${host?`<label class="host-mode-control">Tu función<select id="onlineHostMode" ${room.status!=='waiting'?'disabled':''}><option value="playing" ${room.host_mode==='playing'?'selected':''}>Jugar y administrar</option><option value="moderator" ${room.host_mode==='moderator'?'selected':''}>Solo moderar</option></select></label>`:`<p class="guest-note">El anfitrión administra los puntos y el inicio de la partida.</p>`}
       <div class="online-members">${members.map(member=>`<article class="online-member ${member.user_id===room.host_id?'host':''}"><span class="online-avatar">${escape(member.display_name.charAt(0).toUpperCase())}</span><div><b>${escape(member.display_name)}</b><small>${member.user_id===room.host_id?'ANFITRIÓN · ':''}${member.seat===null?'MODERADOR':`ASIENTO ${member.seat+1}`}</small></div>${host?`<label>Créditos<input type="number" min="0" max="1000000" step="10" value="${member.credits}" data-credit="${member.user_id}"></label><button type="button" data-save-credit="${member.user_id}">Guardar</button>${member.user_id!==user.id?`<button type="button" class="kick" data-kick="${member.user_id}">Expulsar</button>`:''}`:`<strong>${member.credits.toLocaleString('es-ES')} créditos</strong>`}</article>`).join('')}</div>
-      <div class="room-actions">${host&&room.status==='waiting'?'<button type="button" class="primary-btn" data-start>INICIAR SALA</button>':''}<button type="button" class="outline-btn" data-leave>${host?'CERRAR SALA':'SALIR DE LA SALA'}</button></div>
+      <div class="room-actions">${host&&room.status==='waiting'?'<button type="button" class="primary-btn" data-start>INICIAR SALA</button>':''}<button type="button" class="outline-btn" data-exit>SALIR Y VOLVER DESPUÉS</button><button type="button" class="outline-btn room-abandon" data-abandon>${host?'ABANDONAR Y CERRAR SALA':'ABANDONAR SALA'}</button></div>
       ${room.status==='active'?'<p class="sync-notice">La sala está activa. La sincronización de jugadas será la siguiente etapa de la integración.</p>':''}`;
     button.innerHTML=`<span>${host?'♛':'●'}</span><b>${escape(room.invite_code)}</b><small>${me?'Sala conectada':'Reconectando…'}</small>`;
     view.querySelector('#onlineHostMode')?.addEventListener('change',event=>run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:event.target.value,p_status:null})));
@@ -73,7 +75,9 @@
     if(save){const id=save.dataset.saveCredit,input=$(`[data-credit="${id}"]`);run(()=>rpc('host_set_member_credits',{p_room_id:room.id,p_user_id:id,p_credits:Number(input.value)}));}
     if(kick)run(()=>rpc('host_remove_room_member',{p_room_id:room.id,p_user_id:kick.dataset.kick}));
     if(event.target.closest('[data-start]'))run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:null,p_status:'active'}));
-    if(event.target.closest('[data-leave]'))run(async()=>{await rpc('leave_casino_room',{p_room_id:room.id});if(channel)client.removeChannel(channel);room=null;members=[];$('#roomView').hidden=true;$('#roomSetup').hidden=false;history.replaceState(null,'',location.pathname);button.innerHTML='<span>⌁</span><b>SALA ONLINE</b><small>Crear o unirse</small>'});
+    if(event.target.closest('[data-exit]')){modal.hidden=true;message('Puedes volver a esta sala desde el botón Sala online.');}
+    if(event.target.closest('[data-abandon]')&&confirm(host?'Al abandonar, la sala se cerrará para todos. ¿Continuar?':'Perderás tu lugar en esta sala. ¿Continuar?'))run(async()=>{await rpc('leave_casino_room',{p_room_id:room.id});localStorage.removeItem(ROOM_KEY);if(channel)client.removeChannel(channel);room=null;members=[];$('#roomView').hidden=true;$('#roomSetup').hidden=false;history.replaceState(null,'',location.pathname);button.innerHTML='<span>⌁</span><b>SALA ONLINE</b><small>Crear o unirse</small>';message('Has abandonado la sala.')});
   });
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidden)modal.hidden=true});
+  resumeSavedRoom().catch(()=>{});
 })();

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id),config=window.CASINO_SUPABASE_CONFIG||{};let client,rooms=[],players=[],withdrawals=[],notifications=[];
-  const labels={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó',waiting:'Esperando',active:'Activa',closed:'Cerrada'};
+  const labels={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó',poker:'Póker',waiting:'Esperando',active:'Activa',closed:'Cerrada'};
   function message(text){$('adminMessage').textContent=text}
   function loadLibrary(){if(window.supabase?.createClient)return Promise.resolve();return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';script.onload=resolve;script.onerror=()=>reject(new Error('No se pudo cargar Supabase.'));document.head.appendChild(script)})}
   async function ensureClient(){if(client)return client;if(!config.url||!config.publishableKey)throw new Error('Supabase no está configurado.');await loadLibrary();client=window.supabase.createClient(config.url,config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});const {data:{session}}=await client.auth.getSession();if(!session){const {error}=await client.auth.signInAnonymously();if(error)throw error}return client}

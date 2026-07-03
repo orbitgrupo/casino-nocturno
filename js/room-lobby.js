@@ -1,8 +1,8 @@
 (function(){
   'use strict';
   const PAGE=(location.pathname.split('/').filter(Boolean).pop()||'').toLowerCase().replace(/\.html$/,'');
-  const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino'};
-  const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó'};
+  const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino',poker:'poker'};
+  const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó',poker:'Póker'};
   const game=GAME_MAP[PAGE];if(!game)return;
   const ROOM_KEY=`casino.onlineRoom.${game}`;
   let client=null,user=null,profile=null,room=null,members=[],channel=null;

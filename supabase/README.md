@@ -6,6 +6,8 @@
    - `migrations/202607020001_invitation_rooms.sql`
    - `migrations/202607020002_player_profiles.sql`
    - `migrations/202607020003_admin_dashboard.sql`
+   - `migrations/202607020004_profile_code_hotfix.sql`
+   - `migrations/202607020005_wallet_history_notifications.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

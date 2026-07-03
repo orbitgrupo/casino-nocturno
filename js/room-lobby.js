@@ -87,7 +87,8 @@
     window.CasinoOnlineRoom={client,user,room,members,host,rpc};window.dispatchEvent(new CustomEvent('casino:online-room',{detail:window.CasinoOnlineRoom}));
     view.querySelector('#onlineHostMode')?.addEventListener('change',event=>run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:event.target.value,p_status:null})));
   }
-  async function run(action){try{message('Procesando…');await action();message('')}catch(error){message(error.message||String(error),'error')}}
+  function friendlyError(error){const raw=error?.message||String(error),known={INVITE_CODE_NOT_FOUND:'Ese código de invitación no existe. Verifica los 6 caracteres.',ROOM_CLOSED:'La sala ya fue cerrada.',ROOM_LOCKED:'La sala está bloqueada temporalmente por administración.',ROOM_FULL:'La sala está llena.',DOMINO_ALREADY_DEALT:'La mano de dominó ya comenzó y las fichas fueron repartidas. Espera la próxima sala o mano.',PROFILE_IN_ANOTHER_ROOM:'Tu perfil ya está en otra sala. Usa “Salir de esta sala” antes de entrar aquí.',PROFILE_REQUIRED:'Primero crea o recupera tu perfil.',INVALID_INVITE_CODE:'El código debe tener exactamente 6 caracteres.'};return known[Object.keys(known).find(key=>raw.includes(key))]||raw}
+  async function run(action){try{message('Procesando…');await action();message('')}catch(error){message(friendlyError(error),'error')}}
   button.onclick=()=>{modal.hidden=false;run(()=>ensureProfileState())};
   quickExit.onclick=()=>{const host=room?.host_id===user?.id;if(confirm(host?'Cerrarás la sala para todos. ¿Continuar?':'Saldrás de esta sala y podrás entrar a otra. ¿Continuar?'))run(leaveCurrentRoom)};
   modal.addEventListener('click',event=>{if(event.target===modal||event.target.closest('[data-close]'))modal.hidden=true});

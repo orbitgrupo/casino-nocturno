@@ -14,6 +14,7 @@
     <section class="room-card" role="dialog" aria-modal="true" aria-labelledby="roomTitle">
       <header><div><small>ANTESALA DE ${escape(GAME_LABEL[game]).toUpperCase()}</small><h2 id="roomTitle">Sala por invitación</h2></div><button type="button" data-close aria-label="Cerrar">×</button></header>
       <div id="profileGate" class="room-setup">
+        <p class="guest-note"><strong>Primer paso: identifica tu perfil.</strong> La clave de recuperación es privada y solo sirve para recuperar tus puntos en tus propios dispositivos. Nunca se comparte para entrar a una sala.</p>
         <div class="room-tabs"><button type="button" data-profile-tab="create" class="active">CREAR PERFIL</button><button type="button" data-profile-tab="recover">RECUPERAR PERFIL</button></div>
         <form id="createProfileForm" class="room-form">
           <label>Nombre visible<input name="displayName" maxlength="20" required placeholder="Tu nombre en el casino"></label>
@@ -32,12 +33,13 @@
         <form id="createRoomForm" class="room-form">
           <label>Tu nombre<input name="displayName" maxlength="20" required placeholder="Nombre del anfitrión"></label>
           <label>Rol del anfitrión<select name="hostMode"><option value="playing">Jugar y administrar</option><option value="moderator">Solo moderar</option></select></label>
-          <label>Créditos iniciales por jugador<input name="initialCredits" type="number" min="0" max="1000000" step="10" value="1000" required></label>
+          <p class="guest-note">Cada jugador usará los puntos otorgados a su perfil por el administrador general.</p>
           <button class="primary-btn" type="submit">CREAR CÓDIGO DE INVITACIÓN</button>
         </form>
         <form id="joinRoomForm" class="room-form" hidden>
           <label>Tu nombre<input name="displayName" maxlength="20" required placeholder="Nombre del jugador"></label>
           <label>Código de invitación<input name="inviteCode" maxlength="6" required placeholder="ABC123" autocomplete="off"></label>
+          <p class="guest-note">Pide al anfitrión únicamente este código de 6 caracteres. No escribas aquí tu clave privada de recuperación.</p>
           <button class="primary-btn" type="submit">ENTRAR A LA SALA</button>
         </form>
       </div>
@@ -59,7 +61,7 @@
   function generateRecoveryKey(){const bytes=crypto.getRandomValues(new Uint8Array(16));return Array.from(bytes,byte=>byte.toString(16).padStart(2,'0')).join('').toUpperCase().match(/.{1,4}/g).join('-')}
   function activateProfile(value){profile=value;$('#profileGate').hidden=true;$('#roomSetup').hidden=false;modal.querySelectorAll('#createRoomForm [name="displayName"],#joinRoomForm [name="displayName"]').forEach(input=>{input.value=profile.display_name;input.readOnly=true});const invite=new URLSearchParams(location.search).get('invite');if(invite){$('[data-tab="join"]').click();$('#joinRoomForm [name="inviteCode"]').value=invite.toUpperCase()}message(`Perfil ${profile.player_code} · ${Number(profile.points).toLocaleString('es-ES')} puntos`)}
   async function ensureProfileState(){if(profile)return profile;const existing=await rpc('get_my_casino_profile');if(existing)activateProfile(existing);else{$('#profileGate').hidden=false;$('#roomSetup').hidden=true}return existing}
-  async function createRoom(form){const values=new FormData(form);const result=await rpc('create_casino_room',{p_game_type:game,p_host_mode:values.get('hostMode'),p_display_name:values.get('displayName'),p_initial_credits:Number(values.get('initialCredits'))});await openRoom(result.room_id)}
+  async function createRoom(form){const values=new FormData(form);const result=await rpc('create_casino_room',{p_game_type:game,p_host_mode:values.get('hostMode'),p_display_name:values.get('displayName'),p_initial_credits:0});await openRoom(result.room_id)}
   async function joinRoom(form){const values=new FormData(form);const result=await rpc('join_casino_room',{p_invite_code:String(values.get('inviteCode')).trim().toUpperCase(),p_display_name:values.get('displayName')});await openRoom(result.room_id)}
   async function openRoom(id){room={id};await refresh();localStorage.setItem(ROOM_KEY,room.id);subscribe();history.replaceState(null,'',`${location.pathname}?room=${room.invite_code}`)}
   async function resumeSavedRoom(){const id=localStorage.getItem(ROOM_KEY);if(!id)return;try{await openRoom(id)}catch(error){localStorage.removeItem(ROOM_KEY);room=null;throw error}}
@@ -74,11 +76,12 @@
     $('#roomSetup').hidden=true;const view=$('#roomView');view.hidden=false;
     view.innerHTML=`<div class="room-code"><span>CÓDIGO DE INVITACIÓN</span><strong>${escape(room.invite_code)}</strong><button type="button" data-copy>Copiar invitación</button></div>
       <div class="room-meta"><span>${escape(GAME_LABEL[room.game_type])}</span><span>${escape(status)}</span><span>${members.length} conectados</span></div>
-      ${host?`<label class="host-mode-control">Tu función<select id="onlineHostMode" ${room.status!=='waiting'?'disabled':''}><option value="playing" ${room.host_mode==='playing'?'selected':''}>Jugar y administrar</option><option value="moderator" ${room.host_mode==='moderator'?'selected':''}>Solo moderar</option></select></label>`:`<p class="guest-note">El anfitrión administra los puntos y el inicio de la partida.</p>`}
-      <div class="online-members">${members.map(member=>`<article class="online-member ${member.user_id===room.host_id?'host':''}"><span class="online-avatar">${escape(member.display_name.charAt(0).toUpperCase())}</span><div><b>${escape(member.display_name)}</b><small>${member.user_id===room.host_id?'ANFITRIÓN · ':''}${member.seat===null?'MODERADOR':`ASIENTO ${member.seat+1}`}</small></div>${host?`<label>Créditos<input type="number" min="0" max="1000000" step="10" value="${member.credits}" data-credit="${member.user_id}"></label><button type="button" data-save-credit="${member.user_id}">Guardar</button>${member.user_id!==user.id?`<button type="button" class="kick" data-kick="${member.user_id}">Expulsar</button>`:''}`:`<strong>${member.credits.toLocaleString('es-ES')} créditos</strong>`}</article>`).join('')}</div>
+      ${host?`<label class="host-mode-control">Tu función<select id="onlineHostMode" ${room.status!=='waiting'?'disabled':''}><option value="playing" ${room.host_mode==='playing'?'selected':''}>Jugar y moderar</option><option value="moderator" ${room.host_mode==='moderator'?'selected':''}>Solo moderar</option></select></label>`:`<p class="guest-note">El anfitrión modera la sala. Solo el administrador general puede otorgar o editar puntos.</p>`}
+      <div class="online-members">${members.map(member=>`<article class="online-member ${member.user_id===room.host_id?'host':''}"><span class="online-avatar">${escape(member.display_name.charAt(0).toUpperCase())}</span><div><b>${escape(member.display_name)}</b><small>${member.user_id===room.host_id?'ANFITRIÓN · ':''}${member.seat===null?'MODERADOR':`ASIENTO ${member.seat+1}`}</small></div><strong>${member.credits.toLocaleString('es-ES')} puntos</strong>${host&&member.user_id!==user.id?`<button type="button" class="kick" data-kick="${member.user_id}">Expulsar</button>`:''}</article>`).join('')}</div>
       <div class="room-actions">${host&&room.status==='waiting'?'<button type="button" class="primary-btn" data-start>INICIAR SALA</button>':''}<button type="button" class="outline-btn" data-exit>SALIR Y VOLVER DESPUÉS</button><button type="button" class="outline-btn room-abandon" data-abandon>${host?'ABANDONAR Y CERRAR SALA':'ABANDONAR SALA'}</button></div>
-      ${room.status==='active'?'<p class="sync-notice">La sala está activa. La sincronización de jugadas será la siguiente etapa de la integración.</p>':''}`;
+      ${room.status==='active'?'<p class="sync-notice">La sala está activa y preparada para sincronizar la partida.</p>':''}`;
     button.innerHTML=`<span>${host?'♛':'●'}</span><b>${escape(room.invite_code)}</b><small>${me?'Sala conectada':'Reconectando…'}</small>`;
+    window.CasinoOnlineRoom={client,user,room,members,host,rpc};window.dispatchEvent(new CustomEvent('casino:online-room',{detail:window.CasinoOnlineRoom}));
     view.querySelector('#onlineHostMode')?.addEventListener('change',event=>run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:event.target.value,p_status:null})));
   }
   async function run(action){try{message('Procesando…');await action();message('')}catch(error){message(error.message||String(error),'error')}}
@@ -92,9 +95,8 @@
   $('[data-profile-ready]').onclick=()=>activateProfile(profile);
   $('#createRoomForm').onsubmit=event=>{event.preventDefault();run(()=>createRoom(event.currentTarget))};$('#joinRoomForm').onsubmit=event=>{event.preventDefault();run(()=>joinRoom(event.currentTarget))};
   $('#roomView').addEventListener('click',event=>{
-    const copy=event.target.closest('[data-copy]'),save=event.target.closest('[data-save-credit]'),kick=event.target.closest('[data-kick]');
+    const copy=event.target.closest('[data-copy]'),kick=event.target.closest('[data-kick]');
     if(copy){const url=`${location.origin}${location.pathname}?invite=${room.invite_code}`;navigator.clipboard?.writeText(url).then(()=>message('Invitación copiada.')).catch(()=>message(`Código: ${room.invite_code}`));}
-    if(save){const id=save.dataset.saveCredit,input=$(`[data-credit="${id}"]`);run(()=>rpc('host_set_member_credits',{p_room_id:room.id,p_user_id:id,p_credits:Number(input.value)}));}
     if(kick)run(()=>rpc('host_remove_room_member',{p_room_id:room.id,p_user_id:kick.dataset.kick}));
     if(event.target.closest('[data-start]'))run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:null,p_status:'active'}));
     if(event.target.closest('[data-exit]')){modal.hidden=true;message('Puedes volver a esta sala desde el botón Sala online.');}

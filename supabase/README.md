@@ -13,6 +13,7 @@
    - `migrations/202607030008_admin_points_and_invites.sql`
    - `migrations/202607030009_room_admin_controls.sql`
    - `migrations/202607030010_join_active_rooms.sql`
+   - `migrations/202607030011_join_room_ambiguity_hotfix.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/admin-controls.css">
 </head>
 <body class="theme-casino admin-page">
   <header class="admin-topbar">
@@ -31,7 +32,8 @@
       <div id="summaryCards" class="summary-cards"></div>
       <section class="admin-panel"><header><div><small>NOTIFICACIONES</small><h2>Avisos administrativos</h2></div></header><div id="adminNotifications" class="activity-list"></div></section>
       <section class="admin-panel"><header><div><small>SOLICITUDES</small><h2>Retiros de puntos</h2></div><select id="withdrawalFilter"><option value="">Todos</option><option value="pending">Pendientes</option><option value="approved">Entregados</option><option value="rejected">Rechazados</option></select></header><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Estado</th><th>Fecha</th><th>Decisión</th></tr></thead><tbody id="withdrawalsTable"></tbody></table></div></section>
-      <section class="admin-panel"><header><div><small>SALAS</small><h2>Actividad por juego</h2></div><select id="roomFilter"><option value="">Todas</option><option value="waiting">Esperando</option><option value="active">Activas</option><option value="closed">Cerradas</option></select></header><div class="table-scroll"><table><thead><tr><th>Código</th><th>Juego</th><th>Estado</th><th>Anfitrión</th><th>Miembros</th><th>Creada</th></tr></thead><tbody id="roomsTable"></tbody></table></div></section>
+      <section class="admin-panel"><header><div><small>SALAS</small><h2>Actividad y control de salas</h2></div><select id="roomFilter"><option value="">Todas</option><option value="waiting">Esperando</option><option value="active">Activas</option><option value="closed">Cerradas</option></select></header><div class="table-scroll"><table><thead><tr><th>Código</th><th>Juego</th><th>Estado</th><th>Anfitrión</th><th>Miembros</th><th>Creada</th><th>Administrar</th></tr></thead><tbody id="roomsTable"></tbody></table></div></section>
+      <section id="roomAdminPanel" class="admin-panel" hidden><header><div><small>CONTROL DE SALA</small><h2 id="roomAdminTitle"></h2></div><button id="closeRoomAdmin" class="outline-btn">CERRAR PANEL</button></header><div id="roomAdminActions" class="admin-room-actions"></div><div id="roomAdminMembers" class="activity-list"></div></section>
       <section class="admin-panel"><header><div><small>JUGADORES</small><h2>Perfiles, puntos e historial</h2></div><input id="playerSearch" placeholder="Buscar nombre o código"></header><p class="admin-hint">Solo el administrador general puede otorgar o corregir puntos. Cada cambio queda registrado y se notifica al jugador.</p><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Sala actual</th><th>Puntos sala</th><th>Creado</th><th>Administrar</th></tr></thead><tbody id="playersTable"></tbody></table></div></section>
       <section id="playerActivityPanel" class="admin-panel" hidden><header><div><small>HISTORIAL DEL JUGADOR</small><h2 id="activityPlayerName"></h2></div><button id="closeActivity" class="outline-btn">CERRAR</button></header><div id="playerActivity" class="activity-list"></div></section>
     </section>

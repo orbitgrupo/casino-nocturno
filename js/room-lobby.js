@@ -10,6 +10,7 @@
   const escape=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
   const button=document.createElement('button');button.className='room-launcher';button.type='button';button.innerHTML='<span>⌁</span><b>SALA ONLINE</b><small>Crear o unirse</small>';document.body.appendChild(button);
+  const quickExit=document.createElement('button');quickExit.className='room-quick-exit';quickExit.type='button';quickExit.hidden=true;quickExit.textContent='SALIR DE ESTA SALA';document.body.appendChild(quickExit);
   const modal=document.createElement('div');modal.className='room-modal';modal.hidden=true;modal.innerHTML=`
     <section class="room-card" role="dialog" aria-modal="true" aria-labelledby="roomTitle">
       <header><div><small>ANTESALA DE ${escape(GAME_LABEL[game]).toUpperCase()}</small><h2 id="roomTitle">Sala por invitación</h2></div><button type="button" data-close aria-label="Cerrar">×</button></header>
@@ -65,6 +66,7 @@
   async function joinRoom(form){const values=new FormData(form);const result=await rpc('join_casino_room',{p_invite_code:String(values.get('inviteCode')).trim().toUpperCase(),p_display_name:values.get('displayName')});await openRoom(result.room_id)}
   async function openRoom(id){room={id};await refresh();localStorage.setItem(ROOM_KEY,room.id);subscribe();history.replaceState(null,'',`${location.pathname}?room=${room.invite_code}`)}
   async function resumeSavedRoom(){const id=localStorage.getItem(ROOM_KEY);if(!id)return;try{await openRoom(id)}catch(error){localStorage.removeItem(ROOM_KEY);room=null;throw error}}
+  async function leaveCurrentRoom(){const wasHost=room?.host_id===user?.id;if(!room?.id)return;await rpc('leave_casino_room',{p_room_id:room.id});localStorage.removeItem(ROOM_KEY);if(channel)client.removeChannel(channel);room=null;members=[];quickExit.hidden=true;document.body.classList.remove('domino-online-active');profile=await rpc('get_my_casino_profile');$('#roomView').hidden=true;activateProfile(profile);history.replaceState(null,'',location.pathname);button.innerHTML='<span>⌁</span><b>SALA ONLINE</b><small>Crear o unirse</small>';message(wasHost?'Cerraste la sala. Ya puedes crear o entrar a otra.':'Saliste de la sala. Ya puedes crear o entrar a otra.')}
   async function refresh(){
     if(!room?.id)return;await ensureClient();
     const [{data:roomData,error:roomError},{data:memberData,error:memberError}]=await Promise.all([client.from('casino_rooms').select('*').eq('id',room.id).single(),client.from('casino_room_members').select('*').eq('room_id',room.id).order('seat',{ascending:true,nullsFirst:false})]);
@@ -81,11 +83,13 @@
       <div class="room-actions">${host&&room.status==='waiting'?'<button type="button" class="primary-btn" data-start>INICIAR SALA</button>':''}<button type="button" class="outline-btn" data-exit>SALIR Y VOLVER DESPUÉS</button><button type="button" class="outline-btn room-abandon" data-abandon>${host?'ABANDONAR Y CERRAR SALA':'ABANDONAR SALA'}</button></div>
       ${room.status==='active'?'<p class="sync-notice">La sala está activa y preparada para sincronizar la partida.</p>':''}`;
     button.innerHTML=`<span>${host?'♛':'●'}</span><b>${escape(room.invite_code)}</b><small>${me?'Sala conectada':'Reconectando…'}</small>`;
+    quickExit.hidden=!me;quickExit.textContent=host?'CERRAR Y SALIR DE LA SALA':'SALIR DE ESTA SALA';
     window.CasinoOnlineRoom={client,user,room,members,host,rpc};window.dispatchEvent(new CustomEvent('casino:online-room',{detail:window.CasinoOnlineRoom}));
     view.querySelector('#onlineHostMode')?.addEventListener('change',event=>run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:event.target.value,p_status:null})));
   }
   async function run(action){try{message('Procesando…');await action();message('')}catch(error){message(error.message||String(error),'error')}}
   button.onclick=()=>{modal.hidden=false;run(()=>ensureProfileState())};
+  quickExit.onclick=()=>{const host=room?.host_id===user?.id;if(confirm(host?'Cerrarás la sala para todos. ¿Continuar?':'Saldrás de esta sala y podrás entrar a otra. ¿Continuar?'))run(leaveCurrentRoom)};
   modal.addEventListener('click',event=>{if(event.target===modal||event.target.closest('[data-close]'))modal.hidden=true});
   modal.querySelectorAll('[data-tab]').forEach(tab=>tab.onclick=()=>{modal.querySelectorAll('[data-tab]').forEach(item=>item.classList.toggle('active',item===tab));$('#createRoomForm').hidden=tab.dataset.tab!=='create';$('#joinRoomForm').hidden=tab.dataset.tab!=='join';message('')});
   modal.querySelectorAll('[data-profile-tab]').forEach(tab=>tab.onclick=()=>{modal.querySelectorAll('[data-profile-tab]').forEach(item=>item.classList.toggle('active',item===tab));$('#createProfileForm').hidden=tab.dataset.profileTab!=='create';$('#recoverProfileForm').hidden=tab.dataset.profileTab!=='recover';message('')});
@@ -100,7 +104,7 @@
     if(kick)run(()=>rpc('host_remove_room_member',{p_room_id:room.id,p_user_id:kick.dataset.kick}));
     if(event.target.closest('[data-start]'))run(()=>rpc('host_update_casino_room',{p_room_id:room.id,p_host_mode:null,p_status:'active'}));
     if(event.target.closest('[data-exit]')){modal.hidden=true;message('Puedes volver a esta sala desde el botón Sala online.');}
-    if(event.target.closest('[data-abandon]')&&confirm(host?'Al abandonar, la sala se cerrará para todos. ¿Continuar?':'Perderás tu lugar en esta sala. ¿Continuar?'))run(async()=>{await rpc('leave_casino_room',{p_room_id:room.id});localStorage.removeItem(ROOM_KEY);if(channel)client.removeChannel(channel);room=null;members=[];profile=await rpc('get_my_casino_profile');$('#roomView').hidden=true;activateProfile(profile);history.replaceState(null,'',location.pathname);button.innerHTML='<span>⌁</span><b>SALA ONLINE</b><small>Crear o unirse</small>';message('Has abandonado la sala. Tus puntos quedaron guardados en tu perfil.')});
+    if(event.target.closest('[data-abandon]')&&confirm(host?'Al abandonar, la sala se cerrará para todos. ¿Continuar?':'Saldrás de esta sala y podrás entrar a otra. ¿Continuar?'))run(leaveCurrentRoom);
   });
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidden)modal.hidden=true});
   ensureProfileState().then(existing=>existing?resumeSavedRoom():null).catch(()=>{});

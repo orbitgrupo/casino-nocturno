@@ -1,6 +1,7 @@
 (function(global){'use strict';
  const KEY='casino.profile.v1'; let profile={wallet:1000,theme:'casino'};
  const favicon=document.createElement('link');favicon.rel='icon';favicon.type='image/png';favicon.href='assets/casino-favicon.png?v=2';document.head.appendChild(favicon);
+ const brandCss=document.createElement('link');brandCss.rel='stylesheet';brandCss.href='css/branding-motion.css';document.head.appendChild(brandCss);
  try{profile={...profile,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){ }
  if(!['casino','elegant','night'].includes(profile.theme))profile.theme='casino';
  function save(){localStorage.setItem(KEY,JSON.stringify(profile));}

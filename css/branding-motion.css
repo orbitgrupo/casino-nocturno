@@ -1,0 +1,11 @@
+:root{--casino-logo:url('../assets/casino-chip-logo.png')}
+.card-back,.hidden-card,.card-back-mini,.poker-card.back,.tile-back{background-image:linear-gradient(rgba(5,18,13,.18),rgba(0,0,0,.32)),var(--casino-logo)!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+.card-back span,.hidden-card>span,.tile-back>b{opacity:0}
+.chips button,.casino-chip,.tray-chip,.dealer-chip{background-image:linear-gradient(rgba(0,0,0,.08),rgba(0,0,0,.24)),var(--casino-logo)!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;text-shadow:0 1px 3px #000}
+.card,.playing-card,.tyd-card,.poker-card{transform-origin:center;animation:casino-card-arrive .42s cubic-bezier(.18,.78,.2,1) both;transition:translate .2s ease,rotate .2s ease,filter .2s ease,box-shadow .2s ease}
+.card:nth-child(2),.tyd-card:nth-child(2),.poker-card:nth-child(2){animation-delay:.045s}.card:nth-child(3),.tyd-card:nth-child(3),.poker-card:nth-child(3){animation-delay:.09s}.card:nth-child(4),.tyd-card:nth-child(4),.poker-card:nth-child(4){animation-delay:.135s}.card:nth-child(5),.tyd-card:nth-child(5),.poker-card:nth-child(5){animation-delay:.18s}
+.domino-tile-piece{transition:translate .2s ease,rotate .2s ease,filter .2s ease,box-shadow .25s ease}
+.domino-path-tile.newly-placed{z-index:12;animation:domino-place-shadow .72s cubic-bezier(.16,.75,.2,1) both}
+@keyframes casino-card-arrive{0%{opacity:0;translate:0 -34px;rotate:-5deg;scale:.88;filter:blur(2px)}65%{opacity:1;translate:0 3px;rotate:1deg;scale:1.025;filter:blur(0)}100%{opacity:1;translate:0 0;rotate:0;scale:1}}
+@keyframes domino-place-shadow{0%{opacity:.55;translate:0 -24px;scale:.92;box-shadow:0 30px 28px rgba(0,0,0,.72),0 0 24px rgba(244,194,70,.42)}55%{opacity:1;translate:0 2px;scale:1.035;box-shadow:0 16px 16px rgba(0,0,0,.52),0 0 15px rgba(244,194,70,.2)}100%{opacity:1;translate:0 0;scale:1;box-shadow:0 2px 5px rgba(0,0,0,.5)}}
+@media(prefers-reduced-motion:reduce){.card,.playing-card,.tyd-card,.poker-card,.domino-path-tile.newly-placed{animation:none!important}.domino-tile-piece{transition:none}}

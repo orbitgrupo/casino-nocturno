@@ -1,4 +1,4 @@
--- Corrige la ambigüedad entre la columna room_id y la columna de salida del RPC.
+-- Corrige el tipo varchar(6) del código para que coincida con el text declarado por el RPC.
 create or replace function public.join_casino_room(p_invite_code text,p_display_name text)
 returns table(room_id uuid,invite_code text) language plpgsql security definer set search_path=public as $$
 declare v_user uuid:=auth.uid();v_room public.casino_rooms%rowtype;v_seat smallint;v_max smallint;v_profile public.casino_player_profiles%rowtype;v_phase text;

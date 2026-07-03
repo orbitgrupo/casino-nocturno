@@ -16,6 +16,7 @@
    - `migrations/202607030011_join_room_ambiguity_hotfix.sql`
    - `migrations/202607030012_join_room_return_type_hotfix.sql`
    - `migrations/202607030013_domino_team_builder.sql`
+   - `migrations/202607030014_numbered_lineup_and_spectators.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

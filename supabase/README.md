@@ -18,6 +18,7 @@
    - `migrations/202607030013_domino_team_builder.sql`
    - `migrations/202607030014_numbered_lineup_and_spectators.sql`
    - `migrations/202607030015_domino_lineup_selector_hotfix.sql`
+   - `migrations/202607030016_double_not_capicua.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

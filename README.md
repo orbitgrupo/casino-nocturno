@@ -1,6 +1,6 @@
 # Casino Nocturno
 
-Mini casino local y responsivo construido con HTML, CSS y JavaScript puro. Funciona sin backend, dependencias externas ni conexión a internet.
+Mini casino responsivo construido con HTML, CSS y JavaScript puro, con partidas locales y servicios online mediante Supabase.
 
 > Todos los saldos son créditos ficticios. Este proyecto no utiliza ni entrega dinero real.
 
@@ -10,8 +10,13 @@ Mini casino local y responsivo construido con HTML, CSS y JavaScript puro. Funci
 - **Ruleta:** variantes europea y americana, rueda numerada y apuestas interiores y exteriores.
 - **Tres y Dos:** cinco participantes, premios secundarios opcionales, manos ordenables y bots.
 - **Dominó:** doble-seis clásico por parejas y Pintintín individual, con manos reordenables mediante arrastrar y soltar.
+- **Póker:** Texas Hold’em local con cartas comunitarias, apuestas y cuatro bots.
 
-Los cuatro juegos comparten tres diseños visuales: Casino clásico, Esmeralda circular y Nocturno moderno. Las preferencias y partidas locales se guardan mediante `localStorage`.
+Los cinco juegos comparten tres diseños visuales: Casino clásico, Esmeralda circular y Nocturno moderno. Las preferencias y partidas locales se guardan mediante `localStorage`.
+
+## Círculo de confianza
+
+El acceso online es privado. La administración crea cada perfil y recibe una invitación de acceso de un solo uso junto con una clave de recuperación. Los códigos vencen, se almacenan únicamente como hash y el dashboard permite renovar o revocar el acceso. Tras cinco intentos fallidos, el dispositivo queda bloqueado temporalmente.
 
 ## Ejecutar localmente
 
@@ -52,7 +57,7 @@ Los juegos siguen funcionando localmente. Además, cada mesa incluye una antesal
 
 Para activarla, sigue [las instrucciones de Supabase](supabase/README.md). Hasta configurar la URL, la clave publicable, Auth anónimo y la migración SQL, el botón **Sala online** mostrará el estado pendiente de configuración.
 
-La antesala no sincroniza todavía las jugadas. La validación servidor-autoritativa de las reglas y el estado compartido de cada partida corresponde a la siguiente etapa mediante Supabase Edge Functions.
+Dominó dispone de asientos, manos privadas, turnos y bots sincronizados mediante funciones protegidas de Supabase.
 
 ## Licencia
 

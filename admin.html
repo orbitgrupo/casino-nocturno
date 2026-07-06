@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="css/profile.css">
   <link rel="stylesheet" href="css/admin-controls.css">
+  <link rel="stylesheet" href="css/admin-trusted.css">
 </head>
 <body class="theme-casino admin-page">
   <header class="admin-topbar">
@@ -30,6 +31,24 @@
     <section id="adminDashboard" hidden>
       <div class="dashboard-heading"><div><p class="eyebrow">CONTROL GENERAL</p><h1>Resumen del casino</h1></div><button id="refreshAdmin" class="outline-btn">ACTUALIZAR</button></div>
       <div id="summaryCards" class="summary-cards"></div>
+      <section class="admin-panel trusted-panel">
+        <header><div><small>CÍRCULO DE CONFIANZA</small><h2>Crear acceso privado</h2></div></header>
+        <form id="trustedProfileForm" class="trusted-profile-form">
+          <label>Nombre del jugador<input name="displayName" required minlength="2" maxlength="30" placeholder="Nombre visible"></label>
+          <label>Puntos iniciales<input name="initialPoints" required type="number" min="0" max="1000000" value="0"></label>
+          <button class="primary-btn" type="submit">CREAR PERFIL Y CLAVES</button>
+        </form>
+        <p class="admin-hint">Las claves se muestran una sola vez. Entrégalas al jugador por un canal privado y separado del código de una sala.</p>
+        <div id="trustedCredentialResult" class="trusted-credentials" hidden>
+          <div><small>JUGADOR</small><strong id="trustedCredentialName"></strong></div>
+          <div><small>CÓDIGO DE PERFIL</small><code id="trustedPlayerCode"></code></div>
+          <div><small>ACCESO AL CASINO · UN SOLO USO</small><code id="trustedAccessCode"></code></div>
+          <div><small>CLAVE DE RECUPERACIÓN</small><code id="trustedRecoveryKey"></code></div>
+          <div><small>VENCE</small><strong id="trustedAccessExpiry"></strong></div>
+          <button id="copyTrustedCredentials" class="primary-btn" type="button">COPIAR TODAS LAS CLAVES</button>
+          <button id="closeTrustedCredentials" class="outline-btn" type="button">OCULTAR</button>
+        </div>
+      </section>
       <section class="admin-panel"><header><div><small>NOTIFICACIONES</small><h2>Avisos administrativos</h2></div></header><div id="adminNotifications" class="activity-list"></div></section>
       <section class="admin-panel"><header><div><small>SOLICITUDES</small><h2>Retiros de puntos</h2></div><select id="withdrawalFilter"><option value="">Todos</option><option value="pending">Pendientes</option><option value="approved">Entregados</option><option value="rejected">Rechazados</option></select></header><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Estado</th><th>Fecha</th><th>Decisión</th></tr></thead><tbody id="withdrawalsTable"></tbody></table></div></section>
       <section class="admin-panel"><header><div><small>SALAS</small><h2>Actividad y control de salas</h2></div><select id="roomFilter"><option value="">Todas</option><option value="waiting">Esperando</option><option value="active">Activas</option><option value="closed">Cerradas</option></select></header><div class="table-scroll"><table><thead><tr><th>Código</th><th>Juego</th><th>Estado</th><th>Anfitrión</th><th>Miembros</th><th>Creada</th><th>Administrar</th></tr></thead><tbody id="roomsTable"></tbody></table></div></section>

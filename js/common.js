@@ -1,4 +1,12 @@
 (function(global){'use strict';
+ function ensurePrivateAccess(){
+  if(document.querySelector('script[src="js/access-gate.js"]'))return;
+  document.documentElement.classList.add('casino-access-pending');
+  if(!document.querySelector('link[href="css/access-gate.css"]')){const css=document.createElement('link');css.rel='stylesheet';css.href='css/access-gate.css';document.head.appendChild(css)}
+  const gate=()=>{if(document.querySelector('script[src="js/access-gate.js"]'))return;const script=document.createElement('script');script.src='js/access-gate.js';document.head.appendChild(script)};
+  if(global.CASINO_SUPABASE_CONFIG)gate();else{const config=document.createElement('script');config.src='js/supabase-config.js';config.onload=gate;config.onerror=gate;document.head.appendChild(config)}
+ }
+ ensurePrivateAccess();
  const KEY='casino.profile.v1'; let profile={wallet:1000,theme:'casino'};
  const favicon=document.createElement('link');favicon.rel='icon';favicon.type='image/png';favicon.href='assets/casino-favicon.png?v=2';document.head.appendChild(favicon);
  const brandCss=document.createElement('link');brandCss.rel='stylesheet';brandCss.href='css/branding-motion.css';document.head.appendChild(brandCss);

@@ -10,6 +10,9 @@
  const KEY='casino.profile.v1'; let profile={wallet:1000,theme:'casino'};
  const favicon=document.createElement('link');favicon.rel='icon';favicon.type='image/png';favicon.href='assets/casino-favicon.png?v=2';document.head.appendChild(favicon);
  const brandCss=document.createElement('link');brandCss.rel='stylesheet';brandCss.href='css/branding-motion.css';document.head.appendChild(brandCss);
+ const motionCss=document.createElement('link');motionCss.rel='stylesheet';motionCss.href='css/smooth-game-motion.css';document.head.appendChild(motionCss);
+ const revealCss=document.createElement('link');revealCss.rel='stylesheet';revealCss.href='css/smooth-card-reveal.css';document.head.appendChild(revealCss);
+ const motionScript=document.createElement('script');motionScript.src='js/smooth-motion.js';motionScript.defer=true;document.head.appendChild(motionScript);
  const mobileCss=document.createElement('link');mobileCss.rel='stylesheet';mobileCss.href='css/mobile-experience.css';document.head.appendChild(mobileCss);
  const mobileScript=document.createElement('script');mobileScript.src='js/mobile-experience.js';mobileScript.defer=true;document.head.appendChild(mobileScript);
  try{profile={...profile,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){ }

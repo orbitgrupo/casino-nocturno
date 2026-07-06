@@ -5,7 +5,7 @@
   const RANK_VALUE={A:14,K:13,Q:12,J:11,'10':10,'9':9,'8':8,'7':7,'6':6,'5':5,'4':4,'3':3,'2':2};
   const $=id=>document.getElementById(id),KEY='casino.tresydos.v2',TURN_KEY='casino.tresydos.nextStarter.v1';
   let state={phase:'setup',players:[],deck:[],discard:[],current:0,pot:0,drawn:false,lockedCard:null,winner:null,claimable:[],sidePots:emptySidePots(),sideWinners:emptySideWinners()};
-  let botTimer,config,nextStarter=Math.max(0,Math.min(4,Number(localStorage.getItem(TURN_KEY))||0));
+  let botTimer,config,nextStarter=Math.max(0,Math.min(4,Number(localStorage.getItem(TURN_KEY))||0)),seenCards=new Set(),hiddenCards=new Map();
   try{config=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem('casino.tresydos.v1')||'null')}catch(_){config=null}
   if(!Array.isArray(config)||config.length!==5)config=Array.from({length:5},(_,i)=>({name:i?`Bot ${i}`:'Jugador 1',type:i?'bot':'human',wallet:1000,side:false}));
   config=config.map((p,i)=>({name:String(p.name||`Jugador ${i+1}`),type:p.type==='human'?'human':'bot',wallet:Number.isFinite(Number(p.wallet))?Number(p.wallet):1000,side:p.side===true}));
@@ -36,6 +36,7 @@
   function rankName(value){return Object.keys(RANK_VALUE).find(r=>RANK_VALUE[r]===value)||''}
 
   function start(){
+    seenCards=new Set();hiddenCards=new Map();
     const ante=Number($('ante').value),sideAnte=Number($('sideAnte').value);
     config.forEach(p=>p.wallet=Math.max(0,Number(p.wallet)||0));
     const active=config.filter(p=>p.wallet>=ante);if(active.length<2)return status('Se necesitan al menos dos participantes con saldo.');
@@ -63,7 +64,7 @@
   let dragFrom=null;
   function reorderHand(player,from,to){if(from===to||from<0||to<0)return;const [card]=player.hand.splice(from,1);player.hand.splice(to,0,card);render()}
   function sortCurrentHand(){const p=state.players[state.current];if(!p||p.type==='bot')return;const rankCounts=counts(p.hand);p.hand.sort((a,b)=>rankCounts[b.rank]-rankCounts[a.rank]||RANK_VALUE[b.rank]-RANK_VALUE[a.rank]||a.suit.localeCompare(b.suit));render()}
-  function cardEl(c,hidden,index,owner){const el=document.createElement('button');el.className=`tyd-card ${hidden?'hidden-card':c.color}`;const currentHuman=owner===state.current&&state.players[owner]?.type==='human';el.disabled=hidden||!currentHuman;el.innerHTML=hidden?'<span>3+2</span>':`<b>${c.rank}</b><i>${c.symbol}</i>`;if(!hidden){el.onclick=()=>{if(state.phase==='discard')discard(index)};el.draggable=currentHuman&&state.phase!=='resolved';el.ondragstart=e=>{dragFrom=index;el.classList.add('dragging');e.dataTransfer.effectAllowed='move'};el.ondragover=e=>{if(currentHuman){e.preventDefault();e.dataTransfer.dropEffect='move'}};el.ondrop=e=>{e.preventDefault();if(currentHuman&&dragFrom!==null)reorderHand(state.players[owner],dragFrom,index)};el.ondragend=()=>{dragFrom=null;el.classList.remove('dragging')}}return el}
+  function cardEl(c,hidden,index,owner){const el=document.createElement('button');el.className=`tyd-card ${hidden?'hidden-card':c.color}`;el.style.setProperty('--motion-index',String(index));if(!seenCards.has(c.id)){seenCards.add(c.id);el.classList.add('fresh-card')}else if(hiddenCards.get(c.id)===true&&!hidden)el.classList.add('card-reveal');hiddenCards.set(c.id,hidden);const currentHuman=owner===state.current&&state.players[owner]?.type==='human';el.disabled=hidden||!currentHuman;el.innerHTML=hidden?'<span>3+2</span>':`<b>${c.rank}</b><i>${c.symbol}</i>`;if(!hidden){el.onclick=()=>{if(state.phase==='discard')discard(index)};el.draggable=currentHuman&&state.phase!=='resolved';el.ondragstart=e=>{dragFrom=index;el.classList.add('dragging');e.dataTransfer.effectAllowed='move'};el.ondragover=e=>{if(currentHuman){e.preventDefault();e.dataTransfer.dropEffect='move'}};el.ondrop=e=>{e.preventDefault();if(currentHuman&&dragFrom!==null)reorderHand(state.players[owner],dragFrom,index)};el.ondragend=()=>{dragFrom=null;el.classList.remove('dragging')}}return el}
   function prizeText(kind){const w=state.sideWinners[kind];return w?(w.names.length?`${w.names.join(' / ')} · ${w.label}`:w.label):'Disponible'}
   function render(){
     clearTimeout(botTimer);$('pot').textContent=state.pot.toLocaleString('es-ES');$('stockCount').textContent=state.deck.length;

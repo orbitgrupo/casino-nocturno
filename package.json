@@ -4,7 +4,7 @@
   "description": "Mini casino local con Blackjack, Ruleta, Tres y Dos y Dominó.",
   "private": false,
   "scripts": {
-    "test": "node tests/game.test.js && node tests/table.test.js && node --check js/access-gate.js && node --check js/admin.js && node --check js/common.js && node --check js/domino-online.js && node --check js/domino.js && node --check js/game.js && node --check js/mobile-experience.js && node --check js/poker.js && node --check js/profile.js && node --check js/room-lobby.js && node --check js/roulette.js && node --check js/supabase-config.js && node --check js/table.js && node --check js/tres-y-dos.js && node --check js/ui.js"
+    "test": "node tests/game.test.js && node tests/table.test.js && node --check js/access-gate.js && node --check js/admin.js && node --check js/common.js && node --check js/domino-online.js && node --check js/domino.js && node --check js/game.js && node --check js/mobile-experience.js && node --check js/poker.js && node --check js/profile.js && node --check js/room-lobby.js && node --check js/roulette.js && node --check js/smooth-motion.js && node --check js/supabase-config.js && node --check js/table.js && node --check js/tres-y-dos.js && node --check js/ui.js"
   },
   "keywords": [
     "casino",

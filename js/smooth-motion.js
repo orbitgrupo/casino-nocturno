@@ -1,0 +1,11 @@
+(function(){
+  'use strict';
+  const pokerSeen=new Set(),pokerSlots=new Map();let onlineChain=[];
+  function cardSignature(card){return card.textContent.trim()||'BACK'}
+  function scanPoker(){document.querySelectorAll('.poker-cards').forEach(container=>{const owner=container.closest('.poker-seat')?.querySelector('header b')?.textContent||'COMMUNITY';[...container.querySelectorAll('.poker-card')].forEach((card,index)=>{const slot=`${owner}:${index}`,signature=cardSignature(card),key=`${slot}:${signature}`,previous=pokerSlots.get(slot);card.style.setProperty('--motion-index',String(index));if(previous==='BACK'&&signature!=='BACK')card.classList.add('card-reveal');else if(!pokerSeen.has(key)){card.classList.add('fresh-card');pokerSeen.add(key)}pokerSlots.set(slot,signature)})})}
+  function tileSignature(tile){return[...tile.querySelectorAll('.domino-half')].map(half=>half.querySelectorAll('.pip').length).join('-')}
+  function scanOnlineDomino(){if(!document.body.classList.contains('domino-online-active'))return;const chain=document.getElementById('dominoChain'),tiles=chain?[...chain.querySelectorAll(':scope > .domino-tile-piece')]:[],next=tiles.map(tileSignature);let placed=-1,side='right';if(next.length===1&&!onlineChain.length)placed=0;else if(next.length===onlineChain.length+1){if(next.slice(1).join('|')===onlineChain.join('|')){placed=0;side='left'}else if(next.slice(0,-1).join('|')===onlineChain.join('|'))placed=next.length-1}if(placed>=0)tiles[placed].classList.add('newly-placed',`path-${side}`);onlineChain=next}
+  const observer=new MutationObserver(()=>{scanPoker();scanOnlineDomino()});
+  function start(){const poker=document.getElementById('pokerSeats'),community=document.getElementById('communityCards'),domino=document.getElementById('dominoChain');if(poker)observer.observe(poker,{childList:true,subtree:true});if(community)observer.observe(community,{childList:true,subtree:true});if(domino)observer.observe(domino,{childList:true,subtree:true});document.getElementById('startPoker')?.addEventListener('click',()=>{pokerSeen.clear();pokerSlots.clear()},{capture:true});scanPoker();scanOnlineDomino()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();

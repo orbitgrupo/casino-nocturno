@@ -6,6 +6,7 @@
   try { saved = JSON.parse(localStorage.getItem(STORAGE.table) || '{}'); } catch (_) { saved = {}; }
   const table = new BlackjackTable.LocalTable(saved);
   const gateway = new BlackjackTable.LocalTableGateway(table);
+  const seenCards = new WeakSet(); const hiddenCards = new WeakMap();
   const els = { status:$('status'), dealerHand:$('dealerHand'), dealerScore:$('dealerScore'), seats:$('seats'), roster:$('roster'), count:$('playerCount'), bet:$('tableBet'), deal:$('dealBtn'), hit:$('hitBtn'), stand:$('standBtn'), surrender:$('surrenderBtn'), next:$('newRoundBtn'), turn:$('turnName'), add:$('openAddPlayer'), dialog:$('playerDialog'), form:$('playerForm'), name:$('playerName'), wallet:$('playerWallet'), error:$('formError'), cancel:$('cancelPlayer'), reset:$('resetTableBtn'), animations:$('animationsToggle'), dealerMode:$('dealerMode'), dealerActions:$('dealerActions'), dealerHit:$('dealerHitBtn'), dealerStand:$('dealerStandBtn') };
   let botTimer = null;
 
@@ -25,6 +26,7 @@
 
   function cardElement(card, hidden, index) {
     const el = document.createElement('div'); el.className = `playing-card mini-card ${hidden ? 'face-down' : 'face-up'}`; el.style.setProperty('--delay', `${index*70}ms`); el.setAttribute('aria-label', hidden ? 'Carta oculta' : `${card.rank} de ${suitName(card.suit)}`);
+    el.style.setProperty('--motion-index',String(index)); if (!seenCards.has(card)) { seenCards.add(card); el.classList.add('fresh-card'); } else if (hiddenCards.get(card)===true&&!hidden) el.classList.add('card-reveal'); hiddenCards.set(card,hidden);
     el.innerHTML = `<div class="card-inner"><div class="card-face card-back"><span>21</span></div><div class="card-face card-front ${card.color}"><div class="corner top"><b>${card.rank}</b><span>${card.symbol}</span></div><span class="suit-center">${card.symbol}</span><div class="corner bottom"><b>${card.rank}</b><span>${card.symbol}</span></div></div></div>`; return el;
   }
   function hand(cards, hideHole=false) { const f=document.createDocumentFragment(); cards.forEach((c,i)=>f.appendChild(cardElement(c,hideHole&&i===1,i))); return f; }

@@ -1,0 +1,34 @@
+.tyd-card.card-reveal,
+.poker-card.card-reveal {
+  animation: smooth-card-face-reveal 420ms cubic-bezier(.2, .8, .2, 1) both !important;
+  transform-origin: center;
+}
+
+@keyframes smooth-card-face-reveal {
+  0% {
+    opacity: .25;
+    transform: perspective(600px) rotateY(82deg) scale(.96);
+  }
+
+  65% {
+    opacity: 1;
+    transform: perspective(600px) rotateY(-4deg) scale(1.015);
+  }
+
+  100% {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tyd-card.card-reveal,
+  .poker-card.card-reveal {
+    animation: none !important;
+  }
+}
+
+.reduce-motion .tyd-card.card-reveal,
+.reduce-motion .poker-card.card-reveal {
+  animation: none !important;
+}

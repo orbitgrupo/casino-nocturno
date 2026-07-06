@@ -1,0 +1,46 @@
+/* Controles táctiles y composición optimizada para teléfonos. */
+@media(max-width:760px){
+  html{scroll-padding-bottom:120px;-webkit-text-size-adjust:100%}
+  body.mobile-game-active{padding-bottom:calc(86px + env(safe-area-inset-bottom));overflow-x:hidden}
+  body.mobile-game-active .topbar{position:sticky;z-index:60;top:0;min-height:56px;padding:7px 11px;background:rgba(3,14,10,.94);backdrop-filter:blur(14px)}
+  body.mobile-game-active .brand{gap:7px}.mobile-game-active .brand-mark{width:36px;height:36px}.mobile-game-active .brand strong{font-size:11px}.mobile-game-active .brand small{font-size:7px}
+  body.mobile-game-active button,body.mobile-game-active select,body.mobile-game-active input{touch-action:manipulation}
+  body.mobile-game-active select,body.mobile-game-active input{min-height:44px;font-size:16px!important}
+  body.mobile-game-active .primary-btn,body.mobile-game-active .action-btn,body.mobile-game-active .outline-btn,body.mobile-game-active .claim-btn{min-height:46px}
+  body.mobile-game-active footer{display:none}
+  .mobile-action-dock{position:fixed;z-index:78;right:0;bottom:0;left:0;display:flex;align-items:stretch;gap:7px;min-height:76px;padding:9px 10px calc(9px + env(safe-area-inset-bottom));overflow-x:auto;border-top:1px solid rgba(240,201,111,.38);background:linear-gradient(180deg,rgba(4,27,20,.94),rgba(2,13,9,.99));box-shadow:0 -14px 40px rgba(0,0,0,.48);backdrop-filter:blur(16px);scrollbar-width:none;overscroll-behavior-x:contain}
+  .mobile-action-dock::-webkit-scrollbar{display:none}.mobile-action-dock:empty{display:none}
+  .mobile-action-dock>button,.mobile-action-dock .turn-actions>button,.mobile-action-dock .dealer-actions>button,.mobile-action-dock .hand-tools>button,.mobile-action-dock .poker-actions>button{flex:1 0 112px;width:auto;min-width:112px;min-height:56px;margin:0;padding:9px 12px;border-radius:12px;font-size:10px;line-height:1.25;letter-spacing:.06em;white-space:normal}
+  .mobile-action-dock .turn-actions,.mobile-action-dock .dealer-actions,.mobile-action-dock .hand-tools,.mobile-action-dock .poker-actions{display:contents}
+  .mobile-action-dock [hidden]{display:none!important}.mobile-action-dock button:disabled{opacity:.38}
+  body.mobile-game-active .room-launcher{right:10px;bottom:calc(88px + env(safe-area-inset-bottom))}
+  body.mobile-game-active .room-quick-exit{right:10px;bottom:calc(145px + env(safe-area-inset-bottom))}
+  .control-panel,.poker-controls,.roulette-board{padding:18px 14px!important}
+  .panel-section{padding:16px 0}.admin-heading{padding-bottom:15px}.participant-setup{margin:14px 0}
+  .settings summary,.advanced-bets summary{min-height:44px;display:flex;align-items:center}
+  .modal,.room-modal{padding:8px}.modal-card{max-height:calc(100dvh - 16px);padding:20px;overflow:auto}
+
+  /* Blackjack */
+  .multiplayer-table{padding-inline:7px!important;padding-bottom:16px!important}.multiplayer-table .table-heading{width:94%}.dealer-rail{width:96%!important}.casino-rules{width:94%!important}.multiplayer-table .seats{gap:7px!important}.multiplayer-table .player-seat{min-width:0;padding:8px}.seat-cards{min-height:88px}.seat-cards .mini-card{width:46px}.bet-input-wrap{min-height:48px}.bet-input-wrap .icon-btn{min-width:48px;min-height:48px}
+
+  /* Ruleta */
+  .roulette-stage{min-height:440px!important;padding:38px 8px 18px}.roulette-wheel{width:min(300px,86vw)!important;border-width:14px}.result-panel{margin-top:22px}.board-toolbar{grid-template-columns:1fr 1fr}.number-grid{gap:5px}.number-cell{min-height:48px;border-radius:5px;font-size:14px}.outside-bets{gap:5px}.outside-cell{min-height:46px;border-radius:5px;font-size:10px}.bet-slip{padding-bottom:10px}
+
+  /* Tres y Dos */
+  .tres-table{padding-inline:7px!important}.draw-piles{gap:12px}.draw-piles button{grid-template-columns:54px auto;min-height:74px}.pile{width:54px;height:74px}.tres-seats{gap:7px!important}.tyd-seat{padding:8px}.tyd-hand{justify-content:flex-start;min-height:78px;padding-bottom:8px;overflow-x:auto;overscroll-behavior-x:contain}.tyd-card{flex:0 0 43px;width:43px;height:68px;margin-left:-5px!important}.tyd-card:first-child{margin-left:0!important}
+
+  /* Dominó */
+  .domino-table{padding-inline:6px!important}.domino-center{width:96%!important}.domino-chain{min-height:155px!important;max-height:260px!important;overflow:auto!important}.domino-seats{gap:7px!important}.domino-seat{padding:7px!important}.domino-hand{min-height:76px;gap:7px;padding:7px 3px 10px;scroll-snap-type:x proximity}.domino-hand .domino-tile-piece{scroll-snap-align:center}.end-chooser{bottom:calc(88px + env(safe-area-inset-bottom))!important;max-height:calc(100dvh - 115px);overflow:auto}
+
+  /* Póker */
+  .poker-table{padding:6px!important}.poker-felt{width:100%;height:610px!important;border-width:8px!important;border-radius:24%!important}.community{top:48%;width:96%!important}.poker-card{width:45px!important;height:66px!important}.poker-seat{width:128px!important;padding:7px}.poker-seat:nth-child(1){top:87%}.poker-seat:nth-child(2),.poker-seat:nth-child(3){left:20%!important}.poker-seat:nth-child(4),.poker-seat:nth-child(5){left:80%!important}.poker-seat .poker-card{width:39px!important;height:56px!important}.poker-log{margin-top:16px}
+}
+
+@media(max-width:390px){
+  .mobile-action-dock>button,.mobile-action-dock .turn-actions>button,.mobile-action-dock .dealer-actions>button,.mobile-action-dock .hand-tools>button,.mobile-action-dock .poker-actions>button{flex-basis:104px;min-width:104px;padding-inline:8px;font-size:9px}
+  .roulette-wheel{width:min(278px,88vw)!important}.number-cell{min-height:46px}.outside-cell{font-size:9px}
+  .multiplayer-table .seats,.tres-seats,.domino-seats{grid-template-columns:1fr!important}
+  .tyd-seat:nth-child(5){grid-column:auto!important}.poker-seat{width:118px!important}.poker-seat:nth-child(2),.poker-seat:nth-child(3){left:19%!important}.poker-seat:nth-child(4),.poker-seat:nth-child(5){left:81%!important}
+}
+
+@media(hover:none) and (pointer:coarse){button:active{filter:brightness(1.2);transform:scale(.98)}button:focus-visible{outline:3px solid rgba(255,222,139,.7);outline-offset:2px}}

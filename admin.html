@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/profile.css">
   <link rel="stylesheet" href="css/admin-controls.css">
   <link rel="stylesheet" href="css/admin-trusted.css">
+  <link rel="stylesheet" href="css/admin-email.css">
 </head>
 <body class="theme-casino admin-page">
   <header class="admin-topbar">
@@ -20,16 +21,22 @@
   <main class="admin-shell">
     <section id="adminLogin" class="admin-login">
       <p class="eyebrow">IDENTIFICACIÓN</p><h1>Panel administrativo</h1>
-      <p>Recupera el perfil autorizado como administrador. No se utiliza correo ni teléfono.</p>
+      <p>El panel administrativo utiliza una cuenta de correo exclusiva de Supabase. Los jugadores no necesitan correo ni teléfono.</p>
       <form id="adminLoginForm">
-        <label>Código de jugador<input name="playerCode" required maxlength="14" placeholder="ORBIT-1A2B3C4D"></label>
-        <label>Clave de recuperación<input name="recoveryKey" required maxlength="39" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" type="password"></label>
+        <label>Correo del administrador<input name="email" required type="email" autocomplete="username" placeholder="administrador@correo.com"></label>
+        <label>Contraseña<input name="password" required minlength="8" type="password" autocomplete="current-password"></label>
         <button class="primary-btn" type="submit">ENTRAR AL DASHBOARD</button>
+      </form>
+      <form id="adminBindForm" hidden>
+        <p>Primera vinculación: confirma una sola vez el perfil que ya está autorizado como administrador.</p>
+        <label>Código del perfil administrador<input name="playerCode" required maxlength="14" placeholder="ORBIT-1A2B3C4D"></label>
+        <label>Clave de recuperación<input name="recoveryKey" required maxlength="39" type="password"></label>
+        <button class="primary-btn" type="submit">VINCULAR CORREO AL ADMINISTRADOR</button>
       </form>
       <p id="adminMessage" class="admin-message" role="status"></p>
     </section>
     <section id="adminDashboard" hidden>
-      <div class="dashboard-heading"><div><p class="eyebrow">CONTROL GENERAL</p><h1>Resumen del casino</h1></div><button id="refreshAdmin" class="outline-btn">ACTUALIZAR</button></div>
+      <div class="dashboard-heading"><div><p class="eyebrow">CONTROL GENERAL</p><h1>Resumen del casino</h1></div><div class="dashboard-actions"><button id="refreshAdmin" class="outline-btn">ACTUALIZAR</button><button id="logoutAdmin" class="danger-btn">CERRAR SESIÓN</button></div></div>
       <div id="summaryCards" class="summary-cards"></div>
       <section id="trustedProfilePanel" class="admin-panel trusted-panel" hidden>
         <header><div><small>CÍRCULO DE CONFIANZA</small><h2>Crear usuario y acceso privado</h2></div><button id="closeTrustedProfilePanel" class="outline-btn" type="button">CERRAR</button></header>

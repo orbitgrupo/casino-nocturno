@@ -24,6 +24,7 @@
    - `migrations/202607040019_domino_immediate_seating.sql`
    - `migrations/202607040020_online_domino_bots.sql`
    - `migrations/202607060021_trusted_circle_access.sql`
+   - `migrations/202607060022_admin_email_and_access_reactivation.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

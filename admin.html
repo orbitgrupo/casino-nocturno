@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07130f">
+  <title>Administración · Casino Nocturno</title>
+  <link rel="icon" type="image/png" href="assets/casino-favicon.png?v=2">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/admin-controls.css">
+  <link rel="stylesheet" href="css/admin-trusted.css">
+  <link rel="stylesheet" href="css/admin-email.css">
+</head>
+<body class="theme-casino admin-page">
+  <header class="admin-topbar">
+    <a href="index.html" class="brand"><span class="brand-mark">♠</span><span><strong>CASINO NOCTURNO</strong><small>← VOLVER AL CASINO</small></span></a>
+    <div><small>ACCESO RESTRINGIDO</small><strong>Administración general</strong></div>
+  </header>
+  <main class="admin-shell">
+    <section id="adminLogin" class="admin-login">
+      <p class="eyebrow">IDENTIFICACIÓN</p><h1>Panel administrativo</h1>
+      <p>El panel administrativo utiliza una cuenta de correo exclusiva de Supabase. Los jugadores no necesitan correo ni teléfono.</p>
+      <form id="adminLoginForm">
+        <label>Correo del administrador<input name="email" required type="email" autocomplete="username" placeholder="administrador@correo.com"></label>
+        <label>Contraseña<input name="password" required minlength="8" type="password" autocomplete="current-password"></label>
+        <button class="primary-btn" type="submit">ENTRAR AL DASHBOARD</button>
+      </form>
+      <form id="adminBindForm" hidden>
+        <p>Primera vinculación: confirma una sola vez el perfil que ya está autorizado como administrador.</p>
+        <label>Código del perfil administrador<input name="playerCode" required maxlength="14" placeholder="ORBIT-1A2B3C4D"></label>
+        <label>Clave de recuperación<input name="recoveryKey" required maxlength="39" type="password"></label>
+        <button class="primary-btn" type="submit">VINCULAR CORREO AL ADMINISTRADOR</button>
+      </form>
+      <p id="adminMessage" class="admin-message" role="status"></p>
+    </section>
+    <section id="adminDashboard" hidden>
+      <div class="dashboard-heading"><div><p class="eyebrow">CONTROL GENERAL</p><h1>Resumen del casino</h1></div><div class="dashboard-actions"><button id="refreshAdmin" class="outline-btn">ACTUALIZAR</button><button id="logoutAdmin" class="danger-btn">CERRAR SESIÓN</button></div></div>
+      <div id="summaryCards" class="summary-cards"></div>
+      <section id="trustedProfilePanel" class="admin-panel trusted-panel" hidden>
+        <header><div><small>CÍRCULO DE CONFIANZA</small><h2>Crear usuario y acceso privado</h2></div><button id="closeTrustedProfilePanel" class="outline-btn" type="button">CERRAR</button></header>
+        <form id="trustedProfileForm" class="trusted-profile-form">
+          <label>Nombre del jugador<input name="displayName" required minlength="2" maxlength="30" placeholder="Nombre visible"></label>
+          <label>Puntos iniciales<input name="initialPoints" required type="number" min="0" max="1000000" value="0"></label>
+          <button class="primary-btn" type="submit">CREAR PERFIL Y CLAVES</button>
+        </form>
+        <p class="admin-hint">Las claves se muestran una sola vez. Entrégalas al jugador por un canal privado y separado del código de una sala.</p>
+        <div id="trustedCredentialResult" class="trusted-credentials" hidden>
+          <div><small>JUGADOR</small><strong id="trustedCredentialName"></strong></div>
+          <div><small>CÓDIGO DE PERFIL</small><code id="trustedPlayerCode"></code></div>
+          <div><small>ACCESO AL CASINO · UN SOLO USO</small><code id="trustedAccessCode"></code></div>
+          <div><small>CLAVE DE RECUPERACIÓN</small><code id="trustedRecoveryKey"></code></div>
+          <div><small>VENCE</small><strong id="trustedAccessExpiry"></strong></div>
+          <button id="copyTrustedCredentials" class="primary-btn" type="button">COPIAR TODAS LAS CLAVES</button>
+          <button id="closeTrustedCredentials" class="outline-btn" type="button">OCULTAR</button>
+        </div>
+      </section>
+      <section class="admin-panel"><header><div><small>NOTIFICACIONES</small><h2>Avisos administrativos</h2></div></header><div id="adminNotifications" class="activity-list"></div></section>
+      <section class="admin-panel"><header><div><small>SOLICITUDES</small><h2>Retiros de puntos</h2></div><select id="withdrawalFilter"><option value="">Todos</option><option value="pending">Pendientes</option><option value="approved">Entregados</option><option value="rejected">Rechazados</option></select></header><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Estado</th><th>Fecha</th><th>Decisión</th></tr></thead><tbody id="withdrawalsTable"></tbody></table></div></section>
+      <section class="admin-panel"><header><div><small>SALAS</small><h2>Actividad y control de salas</h2></div><select id="roomFilter"><option value="">Todas</option><option value="waiting">Esperando</option><option value="active">Activas</option><option value="closed">Cerradas</option></select></header><div class="table-scroll"><table><thead><tr><th>Código</th><th>Juego</th><th>Estado</th><th>Anfitrión</th><th>Miembros</th><th>Creada</th><th>Administrar</th></tr></thead><tbody id="roomsTable"></tbody></table></div></section>
+      <section id="roomAdminPanel" class="admin-panel" hidden><header><div><small>CONTROL DE SALA</small><h2 id="roomAdminTitle"></h2></div><button id="closeRoomAdmin" class="outline-btn">CERRAR PANEL</button></header><div id="roomAdminActions" class="admin-room-actions"></div><div id="roomAdminMembers" class="activity-list"></div></section>
+      <section class="admin-panel"><header><div><small>JUGADORES</small><h2>Perfiles, puntos e historial</h2></div><div class="player-admin-tools"><input id="playerSearch" placeholder="Buscar nombre o código"><button id="openTrustedProfilePanel" class="primary-btn" type="button">CREAR USUARIO</button></div></header><p class="admin-hint">Solo el administrador general puede crear usuarios y otorgar o corregir puntos. Cada cambio queda registrado y se notifica al jugador.</p><div class="table-scroll"><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Sala actual</th><th>Puntos sala</th><th>Creado</th><th>Administrar</th></tr></thead><tbody id="playersTable"></tbody></table></div></section>
+      <section id="playerActivityPanel" class="admin-panel" hidden><header><div><small>HISTORIAL DEL JUGADOR</small><h2 id="activityPlayerName"></h2></div><button id="closeActivity" class="outline-btn">CERRAR</button></header><div id="playerActivity" class="activity-list"></div></section>
+    </section>
+  </main>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+.dashboard-actions{display:flex;gap:8px}.dashboard-actions button{width:auto}.admin-login form[hidden]{display:none}.admin-login form>p{margin:0 0 4px;color:var(--muted);font-size:10px;line-height:1.5}@media(max-width:600px){.dashboard-actions{flex-direction:column}.dashboard-actions button{min-height:40px}}

@@ -34,6 +34,10 @@
     return ends;
   }
 
+  function hasLegalMove(){
+    return (snapshot?.hand||[]).some(value=>legal(value).length>0);
+  }
+
   async function call(name,params){
     if(busy)return;
     busy=true;
@@ -152,7 +156,9 @@
       return seat;
     }));
 
-    $('passTurn').disabled=!myTurn||snapshot.hand.some(v=>legal(v).length);
+    const canPass=started&&myTurn&&!hasLegalMove();
+    $('passTurn').disabled=!canPass;
+    $('passTurn').textContent=myTurn?(canPass?'PASAR TURNO ONLINE':'TIENES JUGADA'):started?'ESPERA TU TURNO':'PASAR TURNO';
     $('startDomino').hidden=started||!ctx.host;
     $('startDomino').textContent='GUARDAR LUGARES E INICIAR ONLINE';
     $('nextDominoRound').hidden=s.phase!=='round-over'||!ctx.host;

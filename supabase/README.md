@@ -30,6 +30,7 @@
    - `migrations/202607120025_domino_pass_bonus_rules.sql`
    - `migrations/202607120026_dados_rooms.sql`
    - `migrations/202607120027_room_host_permissions_hotfix.sql`
+   - `migrations/202607120028_online_domino_pass_hotfix.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

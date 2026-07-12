@@ -27,6 +27,7 @@
    - `migrations/202607060022_admin_email_and_access_reactivation.sql`
    - `migrations/202607110023_online_blackjack.sql`
    - `migrations/202607110024_host_seat_control.sql`
+   - `migrations/202607120025_domino_pass_bonus_rules.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 

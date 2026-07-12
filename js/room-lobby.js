@@ -1,8 +1,8 @@
 (function(){
   'use strict';
   const PAGE=(location.pathname.split('/').filter(Boolean).pop()||'').toLowerCase().replace(/\.html$/,'');
-  const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino',poker:'poker'};
-  const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó',poker:'Póker'};
+  const GAME_MAP={blackjack:'blackjack',roulette:'roulette','tres-y-dos':'tres-y-dos',domino:'domino',poker:'poker',dados:'dados'};
+  const GAME_LABEL={blackjack:'Blackjack',roulette:'Ruleta','tres-y-dos':'Tres y Dos',domino:'Dominó',poker:'Póker',dados:'Dados'};
   const game=GAME_MAP[PAGE];if(!game)return;
   if(game==='domino'){for(const href of ['css/domino-teams.css','css/domino-numbered-lineup.css','css/domino-lineup-select.css']){const teamCss=document.createElement('link');teamCss.rel='stylesheet';teamCss.href=href;document.head.appendChild(teamCss)}}
   const ROOM_KEY=`casino.onlineRoom.${game}`;

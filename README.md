@@ -11,8 +11,9 @@ Mini casino responsivo construido con HTML, CSS y JavaScript puro, con partidas 
 - **Tres y Dos:** cinco participantes, premios secundarios opcionales, manos ordenables y bots.
 - **Dominó:** doble-seis clásico por parejas y Pintintín individual, con manos reordenables mediante arrastrar y soltar.
 - **Póker:** Texas Hold’em local con cartas comunitarias, apuestas y cuatro bots.
+- **Dados:** juego local tipo craps con línea de pase, no pase, campo, craps, once y hardways.
 
-Los cinco juegos comparten tres diseños visuales: Casino clásico, Esmeralda circular y Nocturno moderno. Las preferencias y partidas locales se guardan mediante `localStorage`.
+Los seis juegos comparten tres diseños visuales: Casino clásico, Esmeralda circular y Nocturno moderno. Las preferencias y partidas locales se guardan mediante `localStorage`.
 
 ## Círculo de confianza
 
@@ -28,13 +29,12 @@ Para comprobar la lógica con Node.js:
 npm test
 ```
 
-## Publicar en GitHub Pages
+## Publicar en GitHub Pages o servidor propio
 
 1. Crea un repositorio nuevo y sube el contenido completo de esta carpeta.
-2. En el repositorio, abre **Settings → Pages**.
-3. Selecciona **Deploy from a branch**.
-4. Elige la rama `main`, carpeta `/ (root)`, y guarda.
-5. GitHub mostrará la dirección pública cuando termine la publicación.
+2. Publica la carpeta raíz como sitio estático.
+3. Si usas Nginx, copia los archivos al directorio público configurado.
+4. Si usas Supabase, ejecuta primero las migraciones pendientes.
 
 Todos los enlaces son relativos y el archivo `.nojekyll` está incluido, por lo que no se requiere un proceso de compilación.
 
@@ -46,9 +46,11 @@ blackjack.html         Blackjack
 roulette.html          Ruleta
 tres-y-dos.html        Tres y Dos
 domino.html            Dominó
-css/                    Diseños y estilos responsivos
-js/                     Lógica e interfaz de los juegos
-tests/                  Pruebas de Blackjack y mesa
+poker.html             Póker
+dados.html             Dados
+css/                   Diseños y estilos responsivos
+js/                    Lógica e interfaz de los juegos
+tests/                 Pruebas de Blackjack y mesa
 ```
 
 ## Estado del proyecto
@@ -57,7 +59,7 @@ Los juegos siguen funcionando localmente. Además, cada mesa incluye una antesal
 
 Para activarla, sigue [las instrucciones de Supabase](supabase/README.md). Hasta configurar la URL, la clave publicable, Auth anónimo y la migración SQL, el botón **Sala online** mostrará el estado pendiente de configuración.
 
-Dominó dispone de asientos, manos privadas, turnos y bots sincronizados mediante funciones protegidas de Supabase.
+Dominó dispone de asientos, manos privadas, turnos y bots sincronizados mediante funciones protegidas de Supabase. Dados queda preparado para sala online y control de participantes; la lógica actual del lanzamiento es local.
 
 ## Licencia
 

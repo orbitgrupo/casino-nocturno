@@ -49,6 +49,10 @@
   --tile-glow: #f0bd54;
 }
 
+.dados-tile {
+  --tile-glow: #d6b05c;
+}
+
 .cover-tile .game-icon {
   display: none;
 }
@@ -60,10 +64,6 @@
 
   .cover-tile {
     grid-column: span 2;
-  }
-
-  .poker-tile {
-    grid-column: 3 / span 2;
   }
 }
 

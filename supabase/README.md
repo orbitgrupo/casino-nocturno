@@ -28,9 +28,10 @@
    - `migrations/202607110023_online_blackjack.sql`
    - `migrations/202607110024_host_seat_control.sql`
    - `migrations/202607120025_domino_pass_bonus_rules.sql`
+   - `migrations/202607120026_dados_rooms.sql`
 4. Copia la **Project URL** y la **Publishable key** en `js/supabase-config.js`.
 5. No uses `service_role` ni una secret key en archivos del navegador.
 
 La migración crea perfiles, salas, participantes, códigos de invitación, RLS, suscripciones Realtime y funciones protegidas para crear/unirse, administrar créditos, expulsar participantes y cambiar el estado de la sala.
 
-Dominó y Blackjack ya tienen sincronización y validación servidor-autoritativa de cada jugada (todo vive en `game_state`/`state_version` de `casino_rooms` más funciones RPC `security definer`, con Realtime avisando a todos los conectados). Ruleta, Tres y Dos y Póker todavía solo tienen la antesala (sala, código de invitación, asientos): cada jugador conectado corre su propia partida local hasta que se les agregue el mismo patrón.
+Dominó y Blackjack ya tienen sincronización y validación servidor-autoritativa de cada jugada. Ruleta, Tres y Dos, Póker y Dados tienen antesala online con sala, código de invitación, asientos y participantes; su juego todavía corre local hasta que se les agregue el mismo patrón de motor sincronizado.

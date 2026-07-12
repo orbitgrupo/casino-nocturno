@@ -28,6 +28,6 @@
  if(['blackjack','roulette','tres-y-dos','domino','poker','dados'].includes(page)){
    const css=document.createElement('link');css.rel='stylesheet';css.href='css/rooms.css';document.head.appendChild(css);
    const load=src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script)});
-   load('js/supabase-config.js').then(()=>load('js/room-lobby.js')).then(()=>page==='domino'?load('js/domino-online.js'):page==='blackjack'?load('js/blackjack-online.js'):null).catch(()=>{});
+   load('js/supabase-config.js?v=20260712sync').then(()=>load('js/room-lobby.js?v=20260712sync')).then(()=>page==='domino'?load('js/domino-online.js?v=20260712sync'):page==='blackjack'?load('js/blackjack-online.js?v=20260712sync'):null).catch(()=>{});
  }
 })(window);

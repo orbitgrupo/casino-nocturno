@@ -1,0 +1,96 @@
+.roulette-wheel.real-wheel {
+  --wheel-radius: clamp(132px, 17vw, 216px);
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, .55);
+}
+
+.roulette-wheel.real-wheel .wheel-rotor {
+  inset: 0;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none;
+  transition: transform 5.2s cubic-bezier(.08, .78, .09, 1);
+}
+
+.roulette-wheel.real-wheel .wheel-rotor::after,
+.roulette-wheel.real-wheel .wheel-numbers {
+  display: none;
+}
+
+.roulette-wheel.real-wheel .wheel-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, .42));
+}
+
+.roulette-wheel.real-wheel .wheel-center {
+  z-index: 5;
+  inset: 41%;
+  border-width: 4px;
+  background: radial-gradient(circle, rgba(255, 231, 152, .95), rgba(132, 83, 18, .9));
+  opacity: .94;
+}
+
+.roulette-wheel.real-wheel .wheel-center span {
+  font-size: 28px;
+}
+
+.roulette-wheel.real-wheel .wheel-ball {
+  width: 15px;
+  height: 15px;
+  margin: -7px;
+  background: radial-gradient(circle at 35% 28%, #fff 0 24%, #f2ead7 38%, #a69573 73%, #4a3d2c 100%);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, .8), 0 0 10px rgba(255, 255, 255, .35);
+  transform: rotate(var(--ball-angle, 0deg)) translateY(calc(-1 * var(--wheel-radius))) scale(1);
+}
+
+.roulette-wheel.real-wheel.is-spinning {
+  box-shadow: 0 0 48px rgba(231, 185, 83, .26), 0 28px 72px rgba(0, 0, 0, .62);
+}
+
+.roulette-wheel.real-wheel.is-spinning .wheel-ball {
+  animation: real-ball-orbit 5.2s cubic-bezier(.11, .69, .1, 1) forwards;
+}
+
+.roulette-wheel.real-wheel.is-spinning .wheel-art {
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, .48)) brightness(1.08);
+}
+
+@keyframes real-ball-orbit {
+  0% {
+    transform: rotate(var(--ball-start, -40deg)) translateY(calc(-1 * var(--wheel-radius) - 8px)) scale(1);
+  }
+  32% {
+    transform: rotate(calc(var(--ball-final, 0deg) - 1560deg)) translateY(calc(-1 * var(--wheel-radius) - 5px)) scale(1.05);
+  }
+  68% {
+    transform: rotate(calc(var(--ball-final, 0deg) - 620deg)) translateY(calc(-1 * var(--wheel-radius) + 16px)) scale(.98);
+  }
+  86% {
+    transform: rotate(calc(var(--ball-final, 0deg) - 135deg)) translateY(calc(-1 * var(--wheel-radius) + 33px)) scale(.94);
+  }
+  94% {
+    transform: rotate(calc(var(--ball-final, 0deg) + 17deg)) translateY(calc(-1 * var(--wheel-radius) + 45px)) scale(.92);
+  }
+  100% {
+    transform: rotate(var(--ball-final, 0deg)) translateY(calc(-1 * var(--wheel-radius) + 50px)) scale(.9);
+  }
+}
+
+@media (max-width: 620px) {
+  .roulette-wheel.real-wheel {
+    --wheel-radius: 132px;
+    width: min(360px, 88vw);
+  }
+
+  .roulette-wheel.real-wheel .wheel-center span {
+    font-size: 22px;
+  }
+}

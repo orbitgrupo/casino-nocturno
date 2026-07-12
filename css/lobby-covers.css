@@ -1,0 +1,83 @@
+.cover-tile {
+  min-height: 455px;
+}
+
+.cover-tile::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255, 224, 143, .15), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 46%);
+  pointer-events: none;
+}
+
+.game-cover {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(100%, 310px);
+  height: 215px;
+  margin: 0 auto 18px;
+}
+
+.game-cover img {
+  display: block;
+  max-width: 112%;
+  max-height: 245px;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 22px rgba(0, 0, 0, .42));
+  transition: transform .32s ease, filter .32s ease;
+}
+
+.cover-tile:hover .game-cover img {
+  transform: translateY(-8px) scale(1.045);
+  filter: drop-shadow(0 30px 26px rgba(0, 0, 0, .5)) brightness(1.08);
+}
+
+.wide-cover {
+  width: min(100%, 340px);
+}
+
+.wide-cover img {
+  max-width: 128%;
+}
+
+.poker-tile {
+  --tile-glow: #f0bd54;
+}
+
+.cover-tile .game-icon {
+  display: none;
+}
+
+@media (min-width: 951px) {
+  .game-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .cover-tile {
+    grid-column: span 2;
+  }
+
+  .poker-tile {
+    grid-column: 3 / span 2;
+  }
+}
+
+@media (max-width: 620px) {
+  .cover-tile {
+    min-height: 350px;
+  }
+
+  .game-cover {
+    height: 160px;
+    margin-bottom: 10px;
+  }
+
+  .game-cover img {
+    max-height: 185px;
+  }
+}

@@ -33,7 +33,7 @@ begin
   if p_game_type not in('blackjack','roulette','tres-y-dos','domino','poker','dados') then raise exception 'Invalid game';end if;
   if p_host_mode not in('playing','moderator') then raise exception 'Invalid host mode';end if;
   v_credits:=greatest(0,v_profile.points);
-  loop v_code:=upper(substr(md5(random()::text||clock_timestamp()::text),1,6));exit when not exists(select 1 from public.casino_rooms where invite_code=v_code);end loop;
+  loop v_code:=upper(substr(md5(random()::text||clock_timestamp()::text),1,6));exit when not exists(select 1 from public.casino_rooms r where r.invite_code=v_code);end loop;
   insert into public.casino_rooms(id,invite_code,game_type,host_id,host_mode,initial_credits) values(v_room,v_code,p_game_type,v_user,p_host_mode,0);
   if p_host_mode='playing' then insert into public.casino_room_members(room_id,user_id,profile_id,display_name,member_role,seat,credits) values(v_room,v_user,v_profile.id,v_profile.display_name,'host',0,v_credits);
   else insert into public.casino_room_members(room_id,user_id,profile_id,display_name,member_role,seat,credits) values(v_room,v_user,v_profile.id,v_profile.display_name,'host',null,v_credits);end if;

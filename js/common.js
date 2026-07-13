@@ -13,8 +13,8 @@
  const motionCss=document.createElement('link');motionCss.rel='stylesheet';motionCss.href='css/smooth-game-motion.css';document.head.appendChild(motionCss);
  const revealCss=document.createElement('link');revealCss.rel='stylesheet';revealCss.href='css/smooth-card-reveal.css';document.head.appendChild(revealCss);
  const motionScript=document.createElement('script');motionScript.src='js/smooth-motion.js';motionScript.defer=true;document.head.appendChild(motionScript);
- const mobileCss=document.createElement('link');mobileCss.rel='stylesheet';mobileCss.href='css/mobile-experience.css';document.head.appendChild(mobileCss);
- const mobileScript=document.createElement('script');mobileScript.src='js/mobile-experience.js';mobileScript.defer=true;document.head.appendChild(mobileScript);
+ const mobileCss=document.createElement('link');mobileCss.rel='stylesheet';mobileCss.href='css/mobile-experience.css?v=20260712mobile';document.head.appendChild(mobileCss);
+ const mobileScript=document.createElement('script');mobileScript.src='js/mobile-experience.js?v=20260712mobile';mobileScript.defer=true;document.head.appendChild(mobileScript);
  try{profile={...profile,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){ }
  if(!['casino','elegant','night'].includes(profile.theme))profile.theme='casino';
  function save(){localStorage.setItem(KEY,JSON.stringify(profile));}

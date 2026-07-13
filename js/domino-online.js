@@ -7,7 +7,7 @@
 
   const css=document.createElement('link');
   css.rel='stylesheet';
-  css.href='css/domino-online.css?v=20260712sync';
+  css.href='css/domino-online.css?v=20260712mobile';
   document.head.appendChild(css);
 
   function spots(n){
@@ -148,7 +148,8 @@
       const member=members.find(m=>m.seat===seatNo),bot=!member&&ctx.room.domino_lineup?.[seatNo]==='BOT',own=seatNo===snapshot.seat;
       const count=own?snapshot.hand.length:Number(snapshot.hand_counts?.[seatNo]??(member||bot?7:0));
       const seat=document.createElement('article');
-      seat.className=`domino-seat seat-${seatNo} ${Number(s.current_seat)===seatNo&&s.phase==='playing'?'active':''}`;
+      seat.className=`domino-seat seat-${seatNo} ${own?'own-seat':''} ${Number(s.current_seat)===seatNo&&s.phase==='playing'?'active':''}`;
+      seat.dataset.seat=String(seatNo+1);
       seat.innerHTML=`<header><span>${bot?'⚙':own?'T':member?.display_name?.[0]||'?'}</span><div><b>${bot?'BOT':member?.display_name||`Lugar ${seatNo+1}`}</b><small>${own?'TU MANO · ':''}${count} fichas</small></div></header><div class="domino-hand"></div>`;
       const hand=seat.querySelector('.domino-hand');
       if(own)hand.append(...snapshot.hand.map(v=>tileEl(v,false,myTurn&&legal(v).length>0)));

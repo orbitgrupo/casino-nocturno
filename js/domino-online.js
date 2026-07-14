@@ -7,7 +7,7 @@
 
   const css=document.createElement('link');
   css.rel='stylesheet';
-  css.href='css/domino-online.css?v=20260714mobilehands';
+  css.href='css/domino-online.css?v=20260714domino-lounge';
   document.head.appendChild(css);
 
   function spots(n){
@@ -23,6 +23,41 @@
     el.innerHTML=hidden?'<b>◆</b>':spots(a)+spots(b);
     if(playable)el.onclick=()=>choose(value);
     return el;
+  }
+
+  function parseTile(value){const [a,b]=String(value).split('-').map(Number);return{a,b,id:`${a}-${b}`}}
+  function pathTile(tile,arm,position){
+    const shown=position.flip?{...tile,a:tile.b,b:tile.a}:tile,el=tileEl(`${shown.a}-${shown.b}`);
+    el.classList.add('domino-path-tile',`path-${arm}`);
+    if(position.turn)el.classList.add('path-turn');
+    el.style.setProperty('--path-x',`${position.x}px`);
+    el.style.setProperty('--path-y',`${position.y}px`);
+    return el;
+  }
+  function buildArm(tiles,arm,openingWidth){
+    const side=arm==='right'?1:-1,vertical=arm==='right'?1:-1,result=[],width=tile=>tile.a===tile.b?36:68;
+    let cursor=side*(openingWidth/2);
+    tiles.forEach((tile,index)=>{
+      const tileWidth=width(tile);
+      if(index<4){cursor+=side*(tileWidth/2);result.push(pathTile(tile,arm,{x:cursor,y:0,turn:false,flip:false}));cursor+=side*(tileWidth/2);return}
+      const step=index-4,place=step%9,band=Math.floor(step/9),direction=side*(band%2===0?-1:1),baseY=52+band*104;
+      if(place===0){result.push(pathTile(tile,arm,{x:cursor,y:vertical*baseY,turn:true,flip:false}));return}
+      cursor+=direction*(tileWidth/2);result.push(pathTile(tile,arm,{x:cursor,y:vertical*(baseY+52),turn:false,flip:direction!==side}));cursor+=direction*(tileWidth/2);
+    });
+    return result;
+  }
+  function renderOnlineChain(values){
+    const chain=$('dominoChain'),tiles=(values||[]).map(parseTile);
+    chain.classList.add('online-chain');
+    if(!tiles.length){chain.replaceChildren();return}
+    const center=Math.floor(tiles.length/2),openingTile=tiles[center],layout=document.createElement('div'),opening=tileEl(openingTile.id);
+    layout.className='domino-path-layout';
+    opening.classList.add('domino-path-tile','path-opening');
+    opening.style.setProperty('--path-x','0px');
+    opening.style.setProperty('--path-y','0px');
+    const left=tiles.slice(0,center).reverse(),right=tiles.slice(center+1),openingWidth=openingTile.a===openingTile.b?36:68;
+    layout.append(opening,...buildArm(left,'left',openingWidth),...buildArm(right,'right',openingWidth));
+    chain.replaceChildren(layout);
   }
 
   function legal(value){
@@ -140,8 +175,7 @@
     document.body.classList.add('domino-online-active');
     $('dominoModeLabel').textContent='ONLINE · '+(s.mode==='pintintin'?'PINTINTÍN':'PAREJAS');
     $('dominoStatus').textContent=started?(s.message||`Turno del asiento ${Number(s.current_seat)+1}`):(ctx.host?'Asigna los cuatro lugares y comienza la partida online.':'Esperando que el creador asigne los lugares e inicie la partida online.');
-    $('dominoChain').replaceChildren(...(s.chain||[]).map(v=>tileEl(v)));
-    $('dominoChain').classList.add('online-chain');
+    renderOnlineChain(s.chain||[]);
 
     const members=ctx.members.filter(m=>m.seat!==null);
     $('dominoSeats').replaceChildren(...[0,1,2,3].map(seatNo=>{

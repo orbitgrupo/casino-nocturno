@@ -13,7 +13,7 @@
  const motionCss=document.createElement('link');motionCss.rel='stylesheet';motionCss.href='css/smooth-game-motion.css';document.head.appendChild(motionCss);
  const revealCss=document.createElement('link');revealCss.rel='stylesheet';revealCss.href='css/smooth-card-reveal.css';document.head.appendChild(revealCss);
  const motionScript=document.createElement('script');motionScript.src='js/smooth-motion.js';motionScript.defer=true;document.head.appendChild(motionScript);
- const mobileCss=document.createElement('link');mobileCss.rel='stylesheet';mobileCss.href='css/mobile-experience.css?v=20260714hands';document.head.appendChild(mobileCss);
+ const mobileCss=document.createElement('link');mobileCss.rel='stylesheet';mobileCss.href='css/mobile-experience.css?v=20260714domino-lounge';document.head.appendChild(mobileCss);
  const mobileScript=document.createElement('script');mobileScript.src='js/mobile-experience.js?v=20260712mobile';mobileScript.defer=true;document.head.appendChild(mobileScript);
  try{profile={...profile,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){ }
  if(!['casino','elegant','night'].includes(profile.theme))profile.theme='casino';
@@ -30,7 +30,7 @@
    const load=src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script)});
    load('js/supabase-config.js?v=20260713rooms')
     .then(()=>load('js/room-lobby.js?v=20260713sync'))
-    .then(()=>page==='domino'?load('js/domino-online.js?v=20260714hands'):page==='blackjack'?load('js/blackjack-online.js?v=20260714hands'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260714hands'):null)
+    .then(()=>page==='domino'?load('js/domino-online.js?v=20260714domino-lounge'):page==='blackjack'?load('js/blackjack-online.js?v=20260714hands'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260714hands'):null)
     .catch(()=>{});
  }
 })(window);

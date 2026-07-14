@@ -213,3 +213,70 @@
     height:67px;
   }
 }
+
+/* Online usa el mismo recorrido visual que la mesa local */
+.domino-online-active .online-chain{
+  display:block;
+  min-height:430px;
+  max-height:560px;
+  padding:8px;
+  overflow:auto;
+  border:0;
+  border-radius:32px;
+  background:rgba(0,0,0,.05);
+}
+.domino-online-active .online-chain .domino-path-layout{
+  position:relative;
+  width:700px;
+  height:560px;
+  margin:auto;
+}
+.domino-online-active .online-chain .domino-path-tile{
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:0!important;
+  transform:translate(calc(-50% + var(--path-x)),calc(-50% + var(--path-y)));
+}
+.domino-online-active .online-chain .domino-path-tile:not(.is-double){
+  flex-direction:row;
+  width:68px;
+  height:36px;
+}
+.domino-online-active .online-chain .domino-path-tile:not(.is-double) .domino-half{
+  width:50%;
+  height:100%;
+}
+.domino-online-active .online-chain .domino-path-tile:not(.is-double) .domino-half+.domino-half{
+  border-top:0;
+  border-left:1px solid #24211d;
+}
+.domino-online-active .online-chain .domino-path-tile.is-double{
+  flex-direction:column;
+  width:36px;
+  height:68px;
+}
+.domino-online-active .online-chain .domino-path-tile.is-double .domino-half{
+  width:100%;
+  height:50%;
+}
+.domino-online-active .online-chain .domino-path-tile.is-double .domino-half+.domino-half{
+  border-top:1px solid #24211d;
+  border-left:0;
+}
+
+@media(max-width:760px){
+  .domino-online-active .online-chain{
+    min-height:45vh!important;
+    max-height:50vh!important;
+    padding:4px!important;
+    border-radius:20px;
+  }
+  .domino-online-active .online-chain .domino-path-layout{
+    width:700px;
+    height:520px;
+    scale:.82;
+    transform-origin:top center;
+    margin-bottom:-85px;
+  }
+}

@@ -65,7 +65,7 @@ function render(){
     const p=started?s.players?.[String(member.seat)]:null,cards=p?.cards||[],status=p?.status;
     const outcomeClass=status==='bust'?'lose':status==='blackjack'?'blackjack':p?.result==='win'?'win':p?.result==='lose'?'lose':p?.result==='blackjack'?'blackjack':'';
     const seat=document.createElement('article');
-    seat.className=`player-seat ${started&&s.phase==='playing'&&s.current_seat===member.seat?'active-seat':''} ${outcomeClass}`;
+    seat.className=`player-seat ${member.user_id===ctx.user?.id?'own-seat':''} ${started&&s.phase==='playing'&&s.current_seat===member.seat?'active-seat':''} ${outcomeClass}`;
     seat.style.cssText=seatPlacement(index,seated.length);
     const label=status==='sitting-out'?'SIN CRÉDITO ESTA RONDA':status==='bust'?'SE PASÓ':status==='blackjack'?'¡BLACKJACK!':status==='surrender'?'SE RINDIÓ':p?.result==='win'?'GANÓ LA RONDA':p?.result==='push'?'EMPATE':p?.result==='lose'?'PERDIÓ':'';
     seat.innerHTML=`<header><span class="avatar">${esc(member.display_name.charAt(0).toUpperCase())}</span><span><strong>${esc(member.display_name)}</strong><small>${Number(member.credits).toLocaleString('es-ES')} puntos</small></span><output>${cards.length?scoreOf(cards):'—'}</output></header><div class="seat-play-zone"><div class="seat-cards"></div></div><footer>${label}</footer>`;

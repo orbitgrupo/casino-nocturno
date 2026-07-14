@@ -306,7 +306,7 @@
     if($('tresTurn'))$('tresTurn').textContent=s.currentSeat!=null?`${s.players?.[String(s.currentSeat)]?.name||`Asiento ${s.currentSeat+1}`} · ${s.drawn?'debe descartar':'debe robar'}`:'Esperando';
     if($('tresSeats'))$('tresSeats').innerHTML=Object.entries(s.players||{}).map(([seat,p])=>{
       const own=Number(seat)===mySeat,turn=Number(seat)===s.currentSeat&&s.phase==='playing',canDiscard=own&&mustDiscard;
-      return `<article class="tyd-seat ${turn?'active':''}"><header><span>${(p.name||'?').charAt(0).toUpperCase()}</span><div><b>${p.name}</b><small>${own?'TU MANO':'JUGADOR'} · ${turn?(s.drawn?'DEBE DESCARTAR':'DEBE ROBAR'):'EN MESA'}</small></div></header><div class="tyd-hand">${(p.hand||[]).map((c,i)=>tresCardButton(c,!own,canDiscard,i)).join('')}</div></article>`;
+      return `<article class="tyd-seat ${own?'own-seat':''} ${turn?'active':''}"><header><span>${(p.name||'?').charAt(0).toUpperCase()}</span><div><b>${p.name}</b><small>${own?'TU MANO':`${(p.hand||[]).length} CARTAS`} · ${turn?(s.drawn?'DEBE DESCARTAR':'DEBE ROBAR'):'EN MESA'}</small></div></header><div class="tyd-hand">${(p.hand||[]).map((c,i)=>tresCardButton(c,!own,canDiscard,i)).join('')}</div></article>`;
     }).join('');
     if($('drawStock'))$('drawStock').disabled=!mustDraw;
     if($('drawDiscard'))$('drawDiscard').disabled=!mustDraw||!(s.discard||[]).length;
@@ -372,7 +372,7 @@
     if($('communityCards'))$('communityCards').innerHTML=(s.community||[]).map(c=>cardHtml(c,false,'poker-card')).join('');
     if($('pokerSeats'))$('pokerSeats').innerHTML=Object.entries(s.players||{}).map(([seat,p])=>{
       const own=Number(seat)===me()?.seat;
-      return `<article class="poker-seat ${p.folded?'folded':''} ${Number(seat)===s.currentSeat?'turn':''}"><h3>${p.name}</h3><small>${p.folded?'RETIRADO':Number(seat)===s.currentSeat?'TURNO':'EN MESA'}</small><div class="poker-cards">${(p.cards||[]).map(c=>cardHtml(c,!own,'poker-card')).join('')}</div></article>`;
+      return `<article class="poker-seat ${own?'own-seat':''} ${p.folded?'folded':''} ${Number(seat)===s.currentSeat?'turn':''}"><h3>${p.name}</h3><small>${own?'TU MANO':`${(p.cards||[]).length} CARTAS`} · ${p.folded?'RETIRADO':Number(seat)===s.currentSeat?'TURNO':'EN MESA'}</small><div class="poker-cards">${(p.cards||[]).map(c=>cardHtml(c,!own,'poker-card')).join('')}</div></article>`;
     }).join('');
     if($('pokerActions'))$('pokerActions').hidden=me()?.seat!==s.currentSeat||s.phase!=='playing';
     if($('startPoker'))$('startPoker').disabled=!host();

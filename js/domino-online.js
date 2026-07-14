@@ -7,7 +7,7 @@
 
   const css=document.createElement('link');
   css.rel='stylesheet';
-  css.href='css/domino-online.css?v=20260712mobile';
+  css.href='css/domino-online.css?v=20260714mobilehands';
   document.head.appendChild(css);
 
   function spots(n){
@@ -153,7 +153,7 @@
       seat.innerHTML=`<header><span>${bot?'⚙':own?'T':member?.display_name?.[0]||'?'}</span><div><b>${bot?'BOT':member?.display_name||`Lugar ${seatNo+1}`}</b><small>${own?'TU MANO · ':''}${count} fichas</small></div></header><div class="domino-hand"></div>`;
       const hand=seat.querySelector('.domino-hand');
       if(own)hand.append(...snapshot.hand.map(v=>tileEl(v,false,myTurn&&legal(v).length>0)));
-      else for(let i=0;i<count;i++)hand.append(tileEl('0-0',true));
+      else if(!window.matchMedia('(max-width:760px)').matches)for(let i=0;i<count;i++)hand.append(tileEl('0-0',true));
       return seat;
     }));
 

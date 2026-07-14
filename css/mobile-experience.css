@@ -44,3 +44,29 @@
 }
 
 @media(hover:none) and (pointer:coarse){button:active{filter:brightness(1.2);transform:scale(.98)}button:focus-visible{outline:3px solid rgba(255,222,139,.7);outline-offset:2px}}
+
+@media(max-width:760px){
+  /* Privacidad y enfoque móvil: solo se muestran las fichas/cartas del jugador. */
+  .tres-y-dos-sync-active .tyd-seat:not(.own-seat){display:flex;align-items:center;min-height:64px;padding:8px 10px!important}
+  .tres-y-dos-sync-active .tyd-seat:not(.own-seat) .tyd-hand{display:none!important}
+  .tres-y-dos-sync-active .tyd-seat:not(.own-seat) header{width:100%}
+  .tres-y-dos-sync-active .tyd-seat.own-seat{grid-column:1/-1;border-color:rgba(255,226,149,.85);background:linear-gradient(180deg,rgba(9,59,43,.96),rgba(4,31,23,.96));box-shadow:0 0 24px rgba(232,189,104,.2)}
+  .tres-y-dos-sync-active .tyd-seat.own-seat .tyd-hand{min-height:92px}
+
+  .domino-online-active .domino-seat:not(.own-seat){display:flex;align-items:center;min-height:64px;padding:8px 10px!important}
+  .domino-online-active .domino-seat:not(.own-seat) .domino-hand{display:none!important}
+  .domino-online-active .domino-seat:not(.own-seat) header{width:100%}
+  .domino-online-active .domino-seat:not(.own-seat) header>span{width:34px!important;height:34px!important;flex:0 0 34px!important}
+  .domino-online-active .domino-seat:not(.own-seat).active{border-color:rgba(255,226,149,.75);box-shadow:0 0 18px rgba(232,189,104,.2)}
+  .domino-online-active .domino-seat.own-seat{grid-column:1/-1;border-color:rgba(255,226,149,.85);background:linear-gradient(180deg,rgba(9,59,43,.96),rgba(4,31,23,.96));box-shadow:0 0 24px rgba(232,189,104,.2)}
+
+  .poker-sync-active .poker-seat:not(.own-seat){min-height:60px}
+  .poker-sync-active .poker-seat:not(.own-seat) .poker-cards{display:none!important}
+  .poker-sync-active .poker-seat.own-seat{width:min(92vw,270px)!important}
+  .poker-sync-active .poker-seat.own-seat .poker-card{width:48px!important;height:70px!important}
+
+  .blackjack-online-active .player-seat:not(.own-seat) .seat-play-zone,
+  .blackjack-online-active .player-seat:not(.own-seat) .seat-cards{display:none!important}
+  .blackjack-online-active .player-seat:not(.own-seat){min-height:66px}
+  .blackjack-online-active .player-seat.own-seat{grid-column:1/-1;border-color:rgba(255,226,149,.85)}
+}

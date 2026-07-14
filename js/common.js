@@ -30,7 +30,7 @@
    const load=src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script)});
    load('js/supabase-config.js?v=20260713rooms')
     .then(()=>load('js/room-lobby.js?v=20260713sync'))
-    .then(()=>page==='domino'?load('js/domino-online.js?v=20260712pass'):page==='blackjack'?load('js/blackjack-online.js?v=20260712pass'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260713sync'):null)
+    .then(()=>page==='domino'?load('js/domino-online.js?v=20260712pass'):page==='blackjack'?load('js/blackjack-online.js?v=20260712pass'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260713tres'):null)
     .catch(()=>{});
  }
 })(window);

@@ -76,6 +76,11 @@
     const [rank,suit]=String(card).split('-');
     return `<span class="${cls} ${suitColor(suit)}"><b>${rank}</b><i>${suitSymbol[suit]||suit}</i></span>`;
   }
+  function tresCardButton(card,hidden,canDiscard,index){
+    if(hidden)return `<button class="tyd-card hidden-card" disabled style="--motion-index:${index}"><span>3+2</span></button>`;
+    const [rank,suit]=String(card).split('-');
+    return `<button class="tyd-card ${suitColor(suit)} ${canDiscard?'online-playable':''}" ${canDiscard?`data-tres-card="${card}"`:'disabled'} style="--motion-index:${index}"><b>${rank}</b><i>${suitSymbol[suit]||suit}</i></button>`;
+  }
   function valueRank(card){const rank=String(card).split('-')[0];return ranks.indexOf(rank)+1}
 
   // RULETA
@@ -255,6 +260,7 @@
   async function startTres(){
     const d=deck(),players={};let pot=0;
     members().slice(0,5).forEach(member=>{players[member.seat]={profile_id:member.profile_id,name:member.display_name,hand:d.splice(0,5),status:'playing'};pot+=20;});
+    if(!Object.keys(players).length)return syncNotice('No hay jugadores sentados en esta sala.');
     const deltas={};Object.values(players).forEach(p=>deltas[p.profile_id]=-20);
     await commit({kind:'tres-y-dos',phase:'playing',deck:d,discard:[d.shift()],players,currentSeat:Number(Object.keys(players)[0]||0),drawn:false,pot,message:'Mano online repartida'},deltas);
   }
@@ -283,18 +289,32 @@
     update({...s,players:{...s.players,[m.seat]:p}});
   }
   function renderTres(){
-    const s=state(); if(s.kind!=='tres-y-dos'){syncNotice(host()?'3 y 2 online: presiona REPARTIR para iniciar.':'Esperando al creador de 3 y 2.');return;}
+    const s=state();
+    if(s.kind!=='tres-y-dos'){
+      if($('tresStatus'))$('tresStatus').textContent=host()?'Sala online activa. Presiona REPARTIR CINCO CARTAS.':'Esperando que el creador reparta la mano online.';
+      if($('startTres')){$('startTres').hidden=false;$('startTres').disabled=!host();$('startTres').textContent='REPARTIR CINCO CARTAS ONLINE';}
+      if($('nextTres'))$('nextTres').hidden=true;
+      ['drawStock','drawDiscard','sortHand','claimPrize'].forEach(id=>{if($(id))$(id).disabled=true});
+      syncNotice(host()?'3 y 2 online: reparte para que todos vean la misma mano.':'3 y 2 online: espera el reparto del creador.');
+      return;
+    }
+    const mySeat=me()?.seat,myTurn=mySeat===s.currentSeat&&s.phase==='playing',mustDraw=myTurn&&!s.drawn,mustDiscard=myTurn&&!!s.drawn;
     if($('pot'))$('pot').textContent=money(s.pot);
     if($('tresStatus'))$('tresStatus').textContent=s.message||'3 y 2 online';
     if($('stockCount'))$('stockCount').textContent=(s.deck||[]).length;
-    if($('discardCard'))$('discardCard').outerHTML=`<span id="discardCard" class="pile">${cardHtml((s.discard||[])[0],false,'card mini-card')}</span>`;
-    if($('tresTurn'))$('tresTurn').textContent=s.currentSeat!=null?`Asiento ${s.currentSeat+1}`:'Esperando';
+    if($('discardCard'))$('discardCard').outerHTML=`<span id="discardCard" class="pile">${cardHtml((s.discard||[])[0],false,'mini-card')}</span>`;
+    if($('tresTurn'))$('tresTurn').textContent=s.currentSeat!=null?`${s.players?.[String(s.currentSeat)]?.name||`Asiento ${s.currentSeat+1}`} · ${s.drawn?'debe descartar':'debe robar'}`:'Esperando';
     if($('tresSeats'))$('tresSeats').innerHTML=Object.entries(s.players||{}).map(([seat,p])=>{
-      const own=Number(seat)===me()?.seat;
-      return `<article class="tres-seat ${own?'active':''}"><h3>${p.name}</h3><small>${Number(seat)===s.currentSeat?'TURNO':'EN MESA'}</small><div class="hand">${(p.hand||[]).map(c=>own?cardHtml(c,false,'card'):cardHtml(c,true,'card')).join('')}</div>${own?`<div class="hand">${(p.hand||[]).map(c=>`<button data-tres-card="${c}" class="outline-btn">${c}</button>`).join('')}</div>`:''}</article>`;
+      const own=Number(seat)===mySeat,turn=Number(seat)===s.currentSeat&&s.phase==='playing',canDiscard=own&&mustDiscard;
+      return `<article class="tyd-seat ${turn?'active':''}"><header><span>${(p.name||'?').charAt(0).toUpperCase()}</span><div><b>${p.name}</b><small>${own?'TU MANO':'JUGADOR'} · ${turn?(s.drawn?'DEBE DESCARTAR':'DEBE ROBAR'):'EN MESA'}</small></div></header><div class="tyd-hand">${(p.hand||[]).map((c,i)=>tresCardButton(c,!own,canDiscard,i)).join('')}</div></article>`;
     }).join('');
-    ['drawStock','drawDiscard','sortHand','claimPrize'].forEach(id=>{if($(id))$(id).disabled=me()?.seat!==s.currentSeat||s.phase!=='playing'});
-    if($('startTres'))$('startTres').disabled=!host();
+    if($('drawStock'))$('drawStock').disabled=!mustDraw;
+    if($('drawDiscard'))$('drawDiscard').disabled=!mustDraw||!(s.discard||[]).length;
+    if($('sortHand'))$('sortHand').disabled=!(mySeat!=null&&s.players?.[String(mySeat)]?.hand?.length);
+    if($('claimPrize')){$('claimPrize').disabled=!(myTurn&&isFullHouse(s.players?.[String(mySeat)]?.hand||[]));$('claimPrize').textContent='★ RECLAMAR 3 Y 2';}
+    if($('startTres')){$('startTres').hidden=s.phase==='playing';$('startTres').disabled=!host();}
+    if($('nextTres')){$('nextTres').hidden=s.phase!=='round-over';$('nextTres').disabled=!host();$('nextTres').textContent='NUEVA MANO ONLINE';}
+    syncNotice(myTurn?(s.drawn?'Tu turno: toca una carta de tu mano para descartar.':'Tu turno: toma del mazo o del descarte.'):'3 y 2 online sincronizado: espera tu turno.');
   }
 
   // POKER

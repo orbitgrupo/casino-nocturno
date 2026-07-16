@@ -61,6 +61,11 @@ Para activarla, sigue [las instrucciones de Supabase](supabase/README.md). Hasta
 
 Dominó dispone de asientos, manos privadas, turnos y bots sincronizados mediante funciones protegidas de Supabase. Dados queda preparado para sala online y control de participantes; la lógica actual del lanzamiento es local.
 
+## Voz en salas online
+
+El casino incluye la interfaz de voz para salas online mediante LiveKit. La voz entra apagada por defecto, solo aparece dentro de una sala y requiere un backend que entregue tokens después de verificar que el jugador pertenece a la sala.
+
+La instalación del servidor está documentada en [VOICE-LIVEKIT.md](VOICE-LIVEKIT.md). No subas claves privadas ni `service_role` a GitHub.
 ## Licencia
 
 No se ha concedido una licencia de reutilización. Antes de publicar, el propietario puede elegir una licencia como MIT si desea permitir copias, modificaciones y redistribución.

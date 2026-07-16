@@ -181,16 +181,24 @@
   }
 
   // DADOS
-  const diceNames={pass:'Línea de pase',dont:'No pase',field:'Campo',craps:'Any Craps',yo:'Yo / Once',hard4:'Hard 4',hard6:'Hard 6',hard8:'Hard 8',hard10:'Hard 10'};
-  function dicePayout(bet,a,b,point){
+  const diceNames={pass:'Pass Line',dont:"Don’t Pass Bar",come:'Come',dontCome:"Don’t Come Bar",field:'Field',place4:'Place 4',place5:'Place 5',place6:'Place 6',place8:'Place 8',place9:'Place 9',place10:'Place 10',hard4:'Hard 4',hard6:'Hard 6',hard8:'Hard 8',hard10:'Hard 10',any7:'Any Seven',craps:'Any Craps',yo:'Yo / Once',aces2:'Aces',aceDeuce3:'Ace-Deuce',boxcars12:'Boxcars'};
+  function dicePlacePayout(type,amount){const target=Number(type.replace('place','')),ratio={4:9/5,5:7/5,6:7/6,8:7/6,9:7/5,10:9/5}[target];return amount*(1+ratio)}
+  function diceResolve(bet,a,b,point){
     const sum=a+b,amount=Number(bet.amount)||0,comeOut=point==null,type=bet.type;
-    if(type==='field')return [3,4,9,10,11].includes(sum)?amount*2:[2,12].includes(sum)?amount*3:0;
-    if(type==='craps')return [2,3,12].includes(sum)?amount*8:0;
-    if(type==='yo')return sum===11?amount*16:0;
-    if(type?.startsWith('hard')){const target=Number(type.replace('hard',''));if(sum===target&&a===b)return amount*({4:8,6:10,8:10,10:8}[target]);if(sum===7||sum===target)return 0;return null}
-    if(type==='pass'){if(comeOut)return [7,11].includes(sum)?amount*2:[2,3,12].includes(sum)?0:null;return sum===point?amount*2:sum===7?0:null}
-    if(type==='dont'){if(comeOut)return [2,3].includes(sum)?amount*2:sum===12?amount:[7,11].includes(sum)?0:null;return sum===7?amount*2:sum===point?0:null}
-    return 0;
+    if(type==='field')return[3,4,9,10,11].includes(sum)?{payout:amount*2}:[2,12].includes(sum)?{payout:amount*3}:{payout:0};
+    if(type==='any7')return{payout:sum===7?amount*5:0};
+    if(type==='craps')return{payout:[2,3,12].includes(sum)?amount*8:0};
+    if(type==='yo')return{payout:sum===11?amount*16:0};
+    if(type==='aces2')return{payout:sum===2?amount*31:0};
+    if(type==='aceDeuce3')return{payout:sum===3?amount*16:0};
+    if(type==='boxcars12')return{payout:sum===12?amount*31:0};
+    if(type?.startsWith('place')){const target=Number(type.replace('place',''));if(sum===target)return{payout:dicePlacePayout(type,amount)};if(sum===7)return{payout:0};return{keep:true,bet}}
+    if(type?.startsWith('hard')){const target=Number(type.replace('hard',''));if(sum===target&&a===b)return{payout:amount*({4:8,6:10,8:10,10:8}[target])};if(sum===7||sum===target)return{payout:0};return{keep:true,bet}}
+    if(type==='pass'){if(comeOut)return[7,11].includes(sum)?{payout:amount*2}:[2,3,12].includes(sum)?{payout:0}:{keep:true,bet};return sum===point?{payout:amount*2}:sum===7?{payout:0}:{keep:true,bet}}
+    if(type==='dont'){if(comeOut)return[2,3].includes(sum)?{payout:amount*2}:sum===12?{payout:amount}:[7,11].includes(sum)?{payout:0}:{keep:true,bet};return sum===7?{payout:amount*2}:sum===point?{payout:0}:{keep:true,bet}}
+    if(type==='come'){if(!bet.comePoint)return[7,11].includes(sum)?{payout:amount*2}:[2,3,12].includes(sum)?{payout:0}:{keep:true,bet:{...bet,comePoint:sum}};return sum===bet.comePoint?{payout:amount*2}:sum===7?{payout:0}:{keep:true,bet}}
+    if(type==='dontCome'){if(!bet.comePoint)return[2,3].includes(sum)?{payout:amount*2}:sum===12?{payout:amount}:[7,11].includes(sum)?{payout:0}:{keep:true,bet:{...bet,comePoint:sum}};return sum===7?{payout:amount*2}:sum===bet.comePoint?{payout:0}:{keep:true,bet}}
+    return{payout:0};
   }
   async function handleDadosClick(event){
     if(event.target.closest('#rollDice')){block(event);if(!host())return syncNotice('Solo el creador lanza los dados online.');return rollDados();}
@@ -198,7 +206,7 @@
     const betButton=event.target.closest('.dice-bet');
     if(betButton){
       block(event);
-      const index=[...document.querySelectorAll('.dice-bet')].indexOf(betButton),type=Object.keys(diceNames)[index],amount=Number($('diceChip')?.value)||10;
+      const type=betButton.dataset.betType||Object.keys(diceNames)[[...document.querySelectorAll('.dice-bet')].indexOf(betButton)],amount=Number($('diceChip')?.value)||10;
       if(!type)return;
       if(state().kind!=='dados'&&host())await startDados();
       return rpc('place_sync_bet',{p_room_id:room().id,p_bet:{type,amount,label:diceNames[type]}});
@@ -214,19 +222,19 @@
     Object.entries(s.bets||{}).forEach(([profileId,list])=>{
       let stake=0,returns=0,keep=[];
       (list||[]).forEach(bet=>{
-        const payout=dicePayout(bet,a,b,s.point);
-        if(payout===null){keep.push(bet);return;}
-        stake+=Number(bet.amount)||0;returns+=payout;
+        const result=diceResolve(bet,a,b,s.point);
+        if(result.keep){keep.push(result.bet);return;}
+        stake+=Number(bet.amount)||0;returns+=Number(result.payout)||0;
       });
       if(keep.length)nextBets[profileId]=keep;
-      if(stake){deltas[profileId]=returns-stake;summary.push(`${list[0]?.display_name||'Jugador'} ${returns>stake?`cobra ${returns}`:'pierde'}`)}
+      if(stake){deltas[profileId]=returns-stake;summary.push(`${list[0]?.display_name||'Jugador'} ${returns>stake?`cobra ${money(returns)}`:'pierde'}`)}
     });
     let point=s.point??null;
     if(point==null&&[4,5,6,8,9,10].includes(sum))point=sum;
     else if(point!=null&&(sum===point||sum===7))point=null;
     setDiceFaces(a,b);
     await sleep(700);
-    await commit({...s,kind:'dados',phase:'betting',point,bets:nextBets,lastRoll:[a,b],history:[sum,...(s.history||[])].slice(0,12),message:`${a} + ${b} = ${sum}. ${summary.join(' · ')||'Sin cobros.'}`},deltas);
+    await commit({...s,kind:'dados',phase:'betting',point,bets:nextBets,lastRoll:[a,b],history:[sum,...(s.history||[])].slice(0,14),message:`${a} + ${b} = ${sum}. ${summary.join(' · ')||'Sin cobros.'}`},deltas);
   }
   function setDiceFaces(a,b){if($('dieOne'))$('dieOne').className=`die show-${a}`;if($('dieTwo'))$('dieTwo').className=`die show-${b}`;}
   function renderDados(){
@@ -237,11 +245,10 @@
     if($('diceHistory'))$('diceHistory').innerHTML=(s.history||[]).map(x=>`<i>${x}</i>`).join('');
     const all=Object.values(s.bets||{}).flat(),own=(s.bets||{})[ownKey()]||[];
     if($('diceTotalBet'))$('diceTotalBet').textContent=`${own.reduce((a,b)=>a+Number(b.amount||0),0)} créditos propios`;
-    if($('diceBetList'))$('diceBetList').innerHTML=all.map(b=>`<div><span>${b.display_name||'Jugador'} · ${b.label||b.type}</span><b>${b.amount}</b></div>`).join('')||'<small>Sin apuestas.</small>';
+    if($('diceBetList'))$('diceBetList').innerHTML=all.map(b=>`<div><span>${b.display_name||'Jugador'} · ${b.label||b.type}${b.comePoint?` (${b.comePoint})`:''}</span><b>${b.amount}</b></div>`).join('')||'<small>Sin apuestas.</small>';
     if($('rollDice'))$('rollDice').disabled=!host();
     syncNotice(host()?'Dados online: tú lanzas, todos pueden apostar.':'Dados online: apuesta y espera el lanzamiento del creador.');
   }
-
   // TRES Y DOS
   function isFullHouse(hand){
     const counts={};hand.forEach(c=>counts[String(c).split('-')[0]]=(counts[String(c).split('-')[0]]||0)+1);

@@ -1,0 +1,15 @@
+port: 7880
+
+rtc:
+  tcp_port: 7881
+  use_external_ip: false
+  port_range_start: 50000
+  port_range_end: 50100
+
+room:
+  auto_create: true
+  empty_timeout: 300
+  departure_timeout: 20
+
+keys:
+  CHANGE_ME_LIVEKIT_API_KEY: CHANGE_ME_LIVEKIT_API_SECRET

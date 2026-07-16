@@ -27,10 +27,12 @@
  if(page==='index'){const profileLink=document.createElement('a');profileLink.href='profile.html?v=20260712';profileLink.textContent='MI PERFIL Y PUNTOS';profileLink.style.cssText='position:fixed;z-index:70;right:16px;bottom:16px;padding:10px 14px;border:1px solid rgba(232,189,104,.35);border-radius:10px;color:#e8bd68;background:rgba(5,23,17,.92);font:800 8px sans-serif;letter-spacing:.12em;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.35)';document.body.appendChild(profileLink)}
  if(['blackjack','roulette','tres-y-dos','domino','poker','dados'].includes(page)){
    const css=document.createElement('link');css.rel='stylesheet';css.href='css/rooms.css';document.head.appendChild(css);
+   const voiceCss=document.createElement('link');voiceCss.rel='stylesheet';voiceCss.href='css/voice-chat.css?v=20260715livekit';document.head.appendChild(voiceCss);
    const load=src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script)});
    load('js/supabase-config.js?v=20260713rooms')
     .then(()=>load('js/room-lobby.js?v=20260713sync'))
-    .then(()=>page==='domino'?load('js/domino-online.js?v=20260714domino-lounge'):page==='blackjack'?load('js/blackjack-online.js?v=20260714hands'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260714hands'):null)
+    .then(()=>page==='domino'?load('js/domino-online.js?v=20260714domino-lounge'):page==='blackjack'?load('js/blackjack-online.js?v=20260714hands'):['roulette','dados','tres-y-dos','poker'].includes(page)?load('js/casino-online-engines.js?v=20260714dados-craps'):null)
+    .then(()=>load('js/voice-chat.js?v=20260715livekit'))
     .catch(()=>{});
  }
 })(window);

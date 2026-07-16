@@ -15,7 +15,7 @@ function loadLocalEnv(){
     const index=clean.indexOf('=');
     const key=clean.slice(0,index).trim();
     const value=clean.slice(index+1).trim().replace(/^["']|["']$/g,'');
-    if(key&&!process.env[key])process.env[key]=value;
+    if(key)process.env[key]=value;
   }
 }
 loadLocalEnv();

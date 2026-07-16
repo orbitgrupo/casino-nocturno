@@ -2,6 +2,23 @@
 
 const { AccessToken } = require('livekit-server-sdk');
 const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
+const path = require('path');
+
+function loadLocalEnv(){
+  const file=path.join(__dirname,'.env.livekit');
+  if(!fs.existsSync(file))return;
+  const lines=fs.readFileSync(file,'utf8').split(/\r?\n/);
+  for(const line of lines){
+    const clean=line.trim();
+    if(!clean||clean.startsWith('#')||!clean.includes('='))continue;
+    const index=clean.indexOf('=');
+    const key=clean.slice(0,index).trim();
+    const value=clean.slice(index+1).trim().replace(/^["']|["']$/g,'');
+    if(key&&!process.env[key])process.env[key]=value;
+  }
+}
+loadLocalEnv();
 
 function required(name){
   const value=process.env[name];

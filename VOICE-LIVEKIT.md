@@ -27,6 +27,16 @@ vendor/README.md
 En el servidor:
 
 ```bash
+cd ~/OrbitServer/apps/casino-nocturno
+git pull
+bash server/livekit/install-on-orbitserver.sh
+```
+
+Ese instalador crea LiveKit, copia la ruta de tokens al backend y te pide `SUPABASE_SERVICE_ROLE_KEY` directamente en Ubuntu. No pegues esa clave en chats ni en GitHub.
+
+Si prefieres hacerlo manualmente:
+
+```bash
 cd ~/OrbitServer
 mkdir -p livekit
 cp ~/OrbitServer/apps/casino-nocturno/server/livekit/livekit.yaml.example ~/OrbitServer/livekit/livekit.yaml
